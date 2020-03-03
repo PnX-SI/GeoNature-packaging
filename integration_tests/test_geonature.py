@@ -36,7 +36,8 @@ def test_page(client):
 def test_api(client):
     urls = [
         'api/gn_commons/modules',
-        'api/occtax/releves?limit=12'
+        'api/occtax/releves?limit=12',
+        'api/users/menu/1'
     ]
     for url in urls:
         assert client.check_status(url, 200)
