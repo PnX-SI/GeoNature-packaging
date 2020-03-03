@@ -1,3 +1,5 @@
+
+sudo apt remove --purge geonature-db
 dpkg-deb --build geonature-db
 sudo apt install ./geonature-db.deb
 
