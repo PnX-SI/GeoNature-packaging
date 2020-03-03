@@ -1,7 +1,11 @@
 import requests
 
 import pytest
-from integration_tests_conf import TAXHUB_CONFIG, USERSHUB_CONFIG
+from integration_tests_conf import ( 
+    TAXHUB_CONFIG,
+    USERSHUB_CONFIG,
+    GEONATURE_CONFIG
+)
 
 
 class HttpClient:
@@ -14,6 +18,7 @@ class HttpClient:
         return start.rstrip("/") + "/" + end.lstrip("/")
 
     def get(self, path, *args, **kwargs):
+        print('url', self.join_url(self.root, path))
         return self.session.get(self.join_url(self.root, path), *args, **kwargs)
 
     def post(self, path, *args, **kwargs):
@@ -60,3 +65,9 @@ def usershub_client():
 def taxhub_client():
     with HttpClient(TAXHUB_CONFIG) as client:
         yield client
+
+@pytest.fixture
+def geonature_client():
+    with HttpClient(GEONATURE_CONFIG) as client:
+        yield client
+

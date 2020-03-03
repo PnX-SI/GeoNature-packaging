@@ -4,7 +4,6 @@ import requests
 
 import pytest
 from http_client import taxhub_client as unlogged_client
-from integration_tests_conf import GEONATURE_URL
 
 
 @pytest.fixture
@@ -39,6 +38,7 @@ def test_all_api(client):
 def test_static_files(client):
     assert client.check_status("static/node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js", 200)
     assert client.check_status("static/node_modules/angularjs-toaster/toaster.min.css", 200)
+    assert client.check_status("static/nimportequoi.min.css", 404)
 
 
 def test_create_liste(client):

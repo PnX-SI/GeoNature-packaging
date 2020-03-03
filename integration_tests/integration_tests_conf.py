@@ -1,11 +1,13 @@
 import os
 from types import SimpleNamespace
 
-GEONATURE_URL = SimpleNamespace(
+GEONATURE_CONFIG = SimpleNamespace(
     url=os.environ.get("GEONATURE_URL", "http://127.0.0.0:8000"),
-    application_id=os.environ.get("GEONATURE_APPLICATION_ID", "3"),
+    test_login=os.environ.get("TAXHUB_TEST_LOGIN", "admin"),
+    test_password=os.environ.get("TAXHUB_TEST_PASSWORD", "admin"),
+    login_url=os.environ.get("TAXHUB_LOGIN_URL", "/api/auth/login"),
+    application_id=os.environ.get("TAXHUB_APPLICATION_ID", "3"),
 )
-
 
 TAXHUB_CONFIG = SimpleNamespace(
     url=os.environ.get("TAXHUB_URL", "http://127.0.0.1:5000"),
