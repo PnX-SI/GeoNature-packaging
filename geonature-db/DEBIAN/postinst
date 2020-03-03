@@ -18,10 +18,31 @@ set -e
 # the debian-policy package
 
 
+
+. /usr/share/debconf/confmodule
+. /usr/share/dbconfig-common/dpkg/postinst.pgsql
+
 case "$1" in
     configure)
         echo "post install configure YEAHHH "
+        dbc_pgsql_createdb_encoding="UTF8"
 
+        dbc_dbuser='geo'
+        dbc_dbpass='geo'
+        dbc_authmethod_user='password'
+
+        dbc_dbadmin='postgres'
+        dbc_authmethod_admin='ident'
+
+        dbc_dbname='geonature-db'
+        dbc_dbserver='localhost'
+        dbc_dbport='5432'
+
+        dbc_install='true'
+        echo "--------------------------------"
+        echo $@
+        echo "--------------------------------"
+        dbc_go geonature-db $@ || true
     ;;
 
 
