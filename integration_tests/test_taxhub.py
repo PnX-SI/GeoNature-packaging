@@ -41,24 +41,24 @@ def test_static_files(client):
     assert client.check_status("static/nimportequoi.min.css", 404)
 
 
-def test_create_liste(client):
+# def test_create_liste(client):
 
-    data_list = {
-        'id_liste':1,
-        "nom_liste":"Test",
-        "desc_liste":"Liste de test",
-        "picto":"images/pictos/favicon.png",
-        "regne":"Animalia",
-        "group2_inpn":"Mamifères"
-    }
+#     data_list = {
+#         'id_liste':1,
+#         "nom_liste":"Test",
+#         "desc_liste":"Liste de test",
+#         "picto":"images/pictos/favicon.png",
+#         "regne":"Animalia",
+#         "group2_inpn":"Mamifères"
+#     }
 
-    response = client.post('api/biblistes/' + str(data_list['id_liste']), json=data_list)
-    assert response.status_code == 200
+#     response = client.post('api/biblistes/' + str(data_list['id_liste']), json=data_list)
+#     assert response.status_code == 200
     
-    data_add_nom = [ 2 ]
+#     data_add_nom = [ 2 ]
 
-    response = client.post('api/biblistes/addnoms/' + str(data_list['id_liste']), json=data_add_nom)
-    assert response.status_code == 200
+#     response = client.post('api/biblistes/addnoms/' + str(data_list['id_liste']), json=data_add_nom)
+#     assert response.status_code == 200
 
-    response = client.get('api/biblistes/deletenoms/' + str(data_list['id_liste']))
-    assert response.status_code == 200
+#     response = client.get('api/biblistes/deletenoms/' + str(data_list['id_liste']))
+#     assert response.status_code == 200
