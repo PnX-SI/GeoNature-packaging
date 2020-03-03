@@ -22,13 +22,41 @@ set -e
 . /usr/share/debconf/confmodule
 . /usr/share/dbconfig-common/dpkg/postinst.pgsql
 
+# you can set the default database encoding to something else
+dbc_pgsql_createdb_encoding="UTF8"
+# dbc_go geonature-db $@
+
+
 case "$1" in
     configure)
         echo "post install configure YEAHHH "
+
+
+        if [ -f /usr/share/debconf/confmodule ]; then
+            . /usr/share/debconf/confmodule
+        fi
+
+
+        if [ -f /usr/share/debconf/confmodule ]; then
+            db_version 2.0
+            db_input high testpackage/dbuser || true
+            db_input high testpackage/dbpass || true
+            db_go
+        fi
+
+        db_get testpackage/dbuser
+        dbuser="$RET"
+        db_get testpackage/dbpass
+        dbpass="$RET"
+
+        echo "values $dbuser $dbpass"
+
+
         dbc_pgsql_createdb_encoding="UTF8"
 
-        dbc_dbuser='geo'
-        dbc_dbpass='geo'
+        dbc_dbuser=$dbuser
+        dbc_dballow="geonature"
+        dbc_dbpass=$dbpass
         dbc_authmethod_user='password'
 
         dbc_dbadmin='postgres'
