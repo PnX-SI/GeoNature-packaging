@@ -1,0 +1,5 @@
+geonature-db (0.0.1-1) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- pnc-si <geonature@ecrins-parcnational.fr>  Tue, 03 Mar 2020 11:14:42 +0100
