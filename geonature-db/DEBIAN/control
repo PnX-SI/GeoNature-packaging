@@ -1,0 +1,9 @@
+Package: geonature-db
+Version: 1.0-1
+Section: base
+Priority: optional
+Maintainer: pnc-si <geonature@ecrins-parcnational.fr>
+Homepage: <insert the upstream URL, if relevant>
+Architecture: all
+Description: Geonature DB
+ Installation de la base de données de geonature

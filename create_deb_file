@@ -1,0 +1,4 @@
+dpkg-deb --build geonature-db
+
+# sudo dpkg -i geonature-db
+# sudo dpkg -r geonature-db
