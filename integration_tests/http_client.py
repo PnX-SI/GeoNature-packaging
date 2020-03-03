@@ -1,7 +1,7 @@
 import requests
 
 import pytest
-from integration_tests_conf import TAXHUB_URL, USERSHUB_CONFIG
+from integration_tests_conf import TAXHUB_CONFIG, USERSHUB_CONFIG
 
 
 class HttpClient:
@@ -58,5 +58,5 @@ def usershub_client():
 
 @pytest.fixture
 def taxhub_client():
-    with HttpClient(root=TAXHUB_URL) as client:
+    with HttpClient(TAXHUB_CONFIG) as client:
         yield client
