@@ -4,7 +4,7 @@ import requests
 
 import pytest
 from http_client import usershub_client as unlogged_client
-from integration_tests_conf import GEONATURE_URL
+from integration_tests_conf import GEONATURE_CONFIG
 
 
 @pytest.fixture
@@ -59,7 +59,7 @@ def test_create_user(client):
             "remarques": "",
             "organisme": "",
             "groupe": False,
-            "id_application": GEONATURE_URL.application_id,
+            "id_application": GEONATURE_CONFIG.application_id,
             "id_organisme": client.conf.root_org_id,
         },
     )
@@ -69,7 +69,7 @@ def test_create_user(client):
 
     response = client.post(
         "/api_register/valid_temp_user",
-        json={"token": token, "id_application": GEONATURE_URL.application_id,},
+        json={"token": token, "id_application": GEONATURE_CONFIG.application_id,},
     )
 
     user = response.json()

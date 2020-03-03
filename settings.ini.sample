@@ -1,11 +1,32 @@
 
+####################################################
+# Settings the HTTP client will use to interact with
+# the sites
+####################################################
+
+# Entry point for testing geonature
+# This is should be the root of the site
 GEONATURE_URL=http://127.0.0.0:8000
+# The application id given to geonature in the database
 GEONATURE_APPLICATION_ID=3
+# Entry point for testing usershub
+# This is should be the root of the site
 USERSHUB_URL=http://127.0.0.1:5001
+# Credentials to use to login and be able to add
+# and delete users
 USERSHUB_TEST_LOGIN=admin
 USERSHUB_TEST_PASSWORD=admin
+# The PATH of the form to send the credentials to
+# This will be appended to USERSHUB_URL
 USERSHUB_LOGIN_URL=/pypn/auth/login
 USERSHUB_APPLICATION_ID=1
+
+####################################################
+# Settings the test scripts will use to configure
+# the testing environment
+###################################################
+
+# The id in the "organisme" table for the "ALL"
 USERSHUB_ROOT_ORG_ID=0
 # Set to 1 so CI scripts will print all commands one by one
 GEONATURE_CI_DEBUG=0
