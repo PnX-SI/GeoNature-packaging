@@ -1,0 +1,16 @@
+
+GEONATURE_URL=http://127.0.0.0:8000
+GEONATURE_APPLICATION_ID=3
+USERSHUB_URL=http://127.0.0.1:5001
+USERSHUB_TEST_LOGIN=admin
+USERSHUB_TEST_PASSWORD=admin
+USERSHUB_LOGIN_URL=/pypn/auth/login
+USERSHUB_APPLICATION_ID=1
+USERSHUB_ROOT_ORG_ID=0
+# Set to 1 so CI scripts will print all commands one by one
+GEONATURE_CI_DEBUG=0
+# Chose where the venv to install CI tests dependancies
+GEONATURE_CI_VENV_DIR=/tmp/geonature_integration_testing_venv
+# Which python to use to create the venv in which execute the tests
+# The minimal versions is 3.5
+GEONATURE_CI_PYTHON=python3.5
