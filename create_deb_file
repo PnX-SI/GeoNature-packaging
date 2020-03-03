@@ -1,4 +1,10 @@
-dpkg-deb --build geonature-db
+sudo dpkg -r geonature-db
+# Génération du deb
 
-# sudo dpkg -i geonature-db
+dpkg-deb --build geonature-db
+sudo dpkg -i geonature-db.deb
+
+# Installation
+# sudo dpkg -i geonature-db.deb
+# Déinstallation
 # sudo dpkg -r geonature-db
