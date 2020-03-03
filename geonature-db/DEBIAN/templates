@@ -1,0 +1,10 @@
+Template: testpackage/dbuser
+Type: string
+Default: geonature
+Description: Nom d'utilisateur de la base de données ?
+ Précisez le nom du superutilisateur de la base de données PostgreSQL, par défault postgres
+
+Template: testpackage/dbpass
+Type: password
+Description: Mot de passe de l'utilisateur de la base de données ?
+ Précisez ici le mot de passe de l'utilisateur de la base de données GeoNature, par défault "geonature"
