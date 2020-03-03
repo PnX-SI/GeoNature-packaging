@@ -1,0 +1,13 @@
+# GeoNature application base url
+
+GEONATURE_URL="http:/v/localhost/geonature"
+
+
+# TaxHub application base url
+
+TAXHUB_URL="http://localhost:5000"
+
+
+# UsersHub application base url
+
+USERSHUB_URL="http://localhost:5001"
