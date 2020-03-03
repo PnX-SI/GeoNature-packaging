@@ -13,6 +13,11 @@ def client(unlogged_client):
     yield unlogged_client
 
 
+@pytest.fixture(scope="module", autouse=True)
+def test_ping():
+    next(unlogged_client.__wrapped__()).ping_or_die()
+
+
 def test_home(unlogged_client):
     response = unlogged_client.get("/")
     assert response.status_code == 200

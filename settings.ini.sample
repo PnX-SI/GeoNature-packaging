@@ -6,7 +6,7 @@
 
 # Entry point for testing geonature
 # This is should be the root of the site
-GEONATURE_URL=http://127.0.0.0:8000
+GEONATURE_URL=http://127.0.0.1:8000
 # The application id given to geonature in the database
 GEONATURE_APPLICATION_ID=3
 # Entry point for testing usershub

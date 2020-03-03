@@ -12,6 +12,11 @@ def client(unlogged_client):
     yield unlogged_client
 
 
+@pytest.fixture(scope="module", autouse=True)
+def test_ping():
+    next(unlogged_client.__wrapped__()).ping_or_die()
+
+
 def test_home(unlogged_client):
     response = unlogged_client.get("/")
     assert response.status_code == 200
@@ -23,9 +28,15 @@ def test_login(unlogged_client):
 
 def test_all_api(client):
     urls = [
-        ("api/taxref/?classe=&famille=&is_inbibtaxons=false&is_ref=false&limit=25&order=asc&orderby=nom_complet&ordre=&page=1&phylum=&regne=", "items"),
-        ("api/bibnoms/?is_inbibNoms=false&is_ref=false&limit=50&order=asc&orderby=taxref.nom_complet&page=1", "items"),
-        ("api/biblistes/", "data")
+        (
+            "api/taxref/?classe=&famille=&is_inbibtaxons=false&is_ref=false&limit=25&order=asc&orderby=nom_complet&ordre=&page=1&phylum=&regne=",
+            "items",
+        ),
+        (
+            "api/bibnoms/?is_inbibNoms=false&is_ref=false&limit=50&order=asc&orderby=taxref.nom_complet&page=1",
+            "items",
+        ),
+        ("api/biblistes/", "data"),
     ]
     for (url, test) in urls:
         response = client.get(url)
@@ -36,8 +47,12 @@ def test_all_api(client):
 
 
 def test_static_files(client):
-    assert client.check_status("static/node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js", 200)
-    assert client.check_status("static/node_modules/angularjs-toaster/toaster.min.css", 200)
+    assert client.check_status(
+        "static/node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js", 200
+    )
+    assert client.check_status(
+        "static/node_modules/angularjs-toaster/toaster.min.css", 200
+    )
     assert client.check_status("static/nimportequoi.min.css", 404)
 
 
@@ -54,7 +69,7 @@ def test_static_files(client):
 
 #     response = client.post('api/biblistes/' + str(data_list['id_liste']), json=data_list)
 #     assert response.status_code == 200
-    
+
 #     data_add_nom = [ 2 ]
 
 #     response = client.post('api/biblistes/addnoms/' + str(data_list['id_liste']), json=data_add_nom)

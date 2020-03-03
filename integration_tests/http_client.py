@@ -1,11 +1,10 @@
+import sys
+
 import requests
+from requests.exceptions import ConnectionError
 
 import pytest
-from integration_tests_conf import ( 
-    TAXHUB_CONFIG,
-    USERSHUB_CONFIG,
-    GEONATURE_CONFIG
-)
+from integration_tests_conf import GEONATURE_CONFIG, TAXHUB_CONFIG, USERSHUB_CONFIG
 
 
 class HttpClient:
@@ -13,6 +12,13 @@ class HttpClient:
         self.conf = service_conf
         self.root = service_conf.url
         self.session = requests.Session()
+
+    def ping(self):
+        try:
+            self.get(self.root).status_code
+        except ConnectionError:
+            return False
+        return True
 
     def join_url(self, start, end):
         return start.rstrip("/") + "/" + end.lstrip("/")
@@ -46,6 +52,24 @@ class HttpClient:
             },
         )
 
+    def ping_or_die(self):
+        if not self.ping():
+            pytest.exit(
+                (
+                    (
+                        "\n\nUnable to connect to {}. "
+                        "\nMake sure you got the right URL "
+                        "in the configuration variables. "
+                        "\nIn doubt, test it in a web browser, "
+                        "you should be able to access it if "
+                        "you want the integration tests to "
+                        "be able to it as well.\n"
+                    )
+                    .upper()
+                    .format(self.root)
+                )
+            )
+
     def __enter__(self):
         self.session.__enter__()
         return self
@@ -65,8 +89,8 @@ def taxhub_client():
     with HttpClient(TAXHUB_CONFIG) as client:
         yield client
 
+
 @pytest.fixture
 def geonature_client():
     with HttpClient(GEONATURE_CONFIG) as client:
         yield client
-
