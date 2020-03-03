@@ -18,7 +18,6 @@ class HttpClient:
         return start.rstrip("/") + "/" + end.lstrip("/")
 
     def get(self, path, *args, **kwargs):
-        print('url', self.join_url(self.root, path))
         return self.session.get(self.join_url(self.root, path), *args, **kwargs)
 
     def post(self, path, *args, **kwargs):
