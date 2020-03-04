@@ -231,6 +231,46 @@ function create_database () {
         fi
     fi
 
+    # Imports schema
+    write_log "Creating 'imports' schema..."
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/imports.sql  &>> $LOG_PATH/install_db.log
+
+    # Synthese schema
+    write_log "Creating 'synthese' schema..."
+    cp $SCRIPT_PATH/core/synthese.sql /tmp/geonature/synthese.sql
+    sudo sed -i "s/MYLOCALSRID/$LOCAL_SRID/g" /tmp/geonature/synthese.sql
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/geonature/synthese.sql  &>> $LOG_PATH/install_db.log
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/synthese_default_values.sql  &>> $LOG_PATH/install_db.log
+    write_log "Creating commons view depending of synthese"
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/commons_synthese.sql  &>> $LOG_PATH/install_db.log
+
+    # Exports schema
+    write_log "Creating 'exports' schema..."
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/exports.sql  &>> $LOG_PATH/install_db.log
+
+    # Monitoring schema
+    write_log "Creating 'monitoring' schema..."
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -v MYLOCALSRID=$LOCAL_SRID -f $SCRIPT_PATH/core/monitoring.sql  &>> $LOG_PATH/install_db.log
+
+    # Permissions schema
+    write_log "Creating 'permissions' schema"
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/permissions.sql  &>> $LOG_PATH/install_db.log
+    write_log "Insert 'permissions' data"
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/permissions_data.sql  &>> $LOG_PATH/install_db.log
+
+    # Sensitivity schema
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/sensitivity.sql  &>> $LOG_PATH/install_db.log
+    write_log "Insert 'gn_sensitivity' data"
+    echo "--------------------"
+    if [ ! -f '/tmp/geonature/181201_referentiel_donnes_sensibles.csv' ]
+        then
+            wget --cache=off https://geonature.fr/data/inpn/sensitivity/181201_referentiel_donnes_sensibles.csv -P /tmp/geonature
+        else
+            echo "/tmp/geonature/181201_referentiel_donnes_sensibles.csv already exist"
+    fi
+    cp $SCRIPT_PATH/core/sensitivity_data.sql /tmp/geonature/sensitivity_data.sql
+    echo "Insert 'gn_sensitivity' data... (This may take a few minutes)"
+    su postgres -c "psql -d $POSTGRES_DB -f /tmp/geonature/sensitivity_data.sql" &>> $LOG_PATH/install_db.log
 }
 
 function drop_database () {
