@@ -165,6 +165,72 @@ function create_database () {
     # Meta schema
     write_log "Creating 'meta' schema..."
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/meta.sql  &>> $LOG_PATH/install_db.log
+
+    # Ref_geo schema
+    write_log "Creating 'ref_geo' schema..."
+    cp $SCRIPT_PATH/core/ref_geo.sql /tmp/geonature/ref_geo.sql
+    sudo sed -i "s/MYLOCALSRID/$LOCAL_SRID/g" /tmp/geonature/ref_geo.sql
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/geonature/ref_geo.sql  &>> $LOG_PATH/install_db.log
+    if [ $REFGEO_MUNICIPALITY = "true" ];
+    then
+        write_log "Insert default French municipalities (IGN admin-express)"
+        if [ ! -f '/tmp/geonature/communes_fr_admin_express_2019-01.zip' ]
+        then
+            wget  --cache=off http://geonature.fr/data/ign/communes_fr_admin_express_2019-01.zip -P /tmp/geonature
+        else
+            echo "/tmp/geonature/communes_fr_admin_express_2019-01.zip already exist"
+        fi
+        unzip -o /tmp/geonature/communes_fr_admin_express_2019-01.zip -d /tmp/geonature
+        su postgres -c "psql -d $POSTGRES_DB -f /tmp/geonature/fr_municipalities.sql" &>> $LOG_PATH/install_db.log
+        write_log "Restore $POSTGRES_USER owner"
+        su postgres -c "psql -d $POSTGRES_DB -c \"ALTER TABLE ref_geo.temp_fr_municipalities OWNER TO $POSTGRES_USER;\"" &>> $LOG_PATH/install_db.log
+        write_log "Insert data in l_areas and li_municipalities tables"
+        export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/ref_geo_municipalities.sql  &>> $LOG_PATH/install_db.log
+        write_log "Drop french municipalities temp table"
+        su postgres -c "psql -d $POSTGRES_DB -c \"DROP TABLE ref_geo.temp_fr_municipalities;\"" &>> $LOG_PATH/install_db.log
+    fi
+    if [ $REFGEO_GRID = "true" ];
+    then
+        write_log "Insert INPN grids"
+        if [ ! -f '/tmp/geonature/inpn_grids.zip' ]
+        then
+            wget  --cache=off https://geonature.fr/data/inpn/layers/2019/inpn_grids.zip -P /tmp/geonature
+        else
+            echo "/tmp/geonature/inpn_grids.zip already exist"
+        fi
+        unzip -o /tmp/geonature/inpn_grids.zip -d /tmp/geonature
+        write_log "Insert grid layers... (This may take a few minutes)"
+        sudo -n -u postgres -s psql -d $POSTGRES_DB -f /tmp/geonature/inpn_grids.sql &>> $LOG_PATH/install_db.log
+        write_log "Restore $POSTGRES_USER owner"
+        sudo -n -u postgres -s psql -d $POSTGRES_DB -c "ALTER TABLE ref_geo.temp_grids_1 OWNER TO $POSTGRES_USER;" &>> $LOG_PATH/install_db.log
+        sudo -n -u postgres -s psql -d $POSTGRES_DB -c "ALTER TABLE ref_geo.temp_grids_5 OWNER TO $POSTGRES_USER;" &>> $LOG_PATH/install_db.log
+        sudo -n -u postgres -s psql -d $POSTGRES_DB -c "ALTER TABLE ref_geo.temp_grids_10 OWNER TO $POSTGRES_USER;" &>> $LOG_PATH/install_db.log
+        write_log "Insert data in l_areas and li_grids tables"
+        export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/ref_geo_grids.sql  &>> $LOG_PATH/install_db.log
+    fi
+    if  [ $REFGEO_DEM = "true" ];
+    then
+        write_log "Insert default French DEM (IGN 250m BD alti)"
+        if [ ! -f '/tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip' ]
+        then
+            wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P /tmp/geonature
+        else
+            echo "/tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip already exist"
+        fi
+	      unzip -o /tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp/geonature
+        #gdalwarp -t_srs EPSG:$LOCAL_SRID /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc /tmp/geonature/dem.tif &>> $LOG_PATH/install_db.log
+        export PGPASSWORD=$POSTGRES_PASSWORD;raster2pgsql -s $LOCAL_SRID -c -C -I -M -d -t 5x5 /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB  &>> $LOG_PATH/install_db.log
+    	#echo "Refresh DEM spatial index. This may take a few minutes..."
+        su postgres -c "psql -d $POSTGRES_DB -c \"REINDEX INDEX ref_geo.dem_st_convexhull_idx;\"" &>> $LOG_PATH/install_db.log
+        if [ $REFGEO_VECTORISE_DEM = "true" ];
+        then
+            write_log "Vectorisation of DEM raster. This may take a few minutes..."
+            su postgres -c "psql -d $POSTGRES_DB -c \"INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;\"" &>> $LOG_PATH/install_db.log
+            write_log "Refresh DEM vector spatial index. This may take a few minutes..."
+            su postgres -c "psql -d $POSTGRES_DB -c \"REINDEX INDEX ref_geo.index_dem_vector_geom;\"" &>> $LOG_PATH/install_db.log
+        fi
+    fi
+
 }
 
 function drop_database () {

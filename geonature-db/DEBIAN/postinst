@@ -35,6 +35,10 @@ if [ -f /usr/share/debconf/confmodule ]; then
     db_input high geonature-db/NOMENCLATURE_LANGUAGE || true
     db_input high geonature-db/LOCAL_SRID || true
     db_input high geonature-db/ADD_USERSHUB_SAMPLE_DATA || true
+    db_input high geonature-db/REFGEO_MUNICIPALITY || true
+    db_input high geonature-db/REFGEO_GRID || true
+    db_input high geonature-db/REFGEO_DEM || true
+    db_input high geonature-db/REFGEO_VECTORISE_DEM || true
     db_go
 fi
 
@@ -54,6 +58,14 @@ db_get geonature-db/LOCAL_SRID
 export LOCAL_SRID="$RET"
 db_get geonature-db/ADD_USERSHUB_SAMPLE_DATA
 export ADD_USERSHUB_SAMPLE_DATA="$RET"
+db_get geonature-db/REFGEO_MUNICIPALITY
+export REFGEO_MUNICIPALITY="$RET"
+db_get geonature-db/REFGEO_GRID
+export REFGEO_GRID="$RET"
+db_get geonature-db/REFGEO_DEM
+export REFGEO_DEM="$RET"
+db_get geonature-db/REFGEO_VECTORISE_DEM
+export REFGEO_VECTORISE_DEM="$RET"
 
 # Generate config files
 echo "Generate configuration" >&2
