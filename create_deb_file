@@ -1,6 +1,7 @@
 dpkg-deb --build geonature-db
 sudo apt purge -y geonature-db
-sudo echo PURGE | sudo debconf-communicate geonature-db
+# sudo echo PURGE | sudo debconf-communicate geonature-db
+
 sudo apt install ./geonature-db.deb
 
 # sudo dpkg -i geonature-db

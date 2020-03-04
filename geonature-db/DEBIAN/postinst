@@ -18,59 +18,29 @@ set -e
 # the debian-policy package
 
 
-
 . /usr/share/debconf/confmodule
-. /usr/share/dbconfig-common/dpkg/postinst.pgsql
-
-# you can set the default database encoding to something else
-dbc_pgsql_createdb_encoding="UTF8"
-# dbc_go geonature-db $@
-
 
 case "$1" in
     configure)
-        echo "post install configure YEAHHH "
-
-
-        if [ -f /usr/share/debconf/confmodule ]; then
-            . /usr/share/debconf/confmodule
-        fi
-
 
         if [ -f /usr/share/debconf/confmodule ]; then
             db_version 2.0
-            db_input high testpackage/dbuser || true
-            db_input high testpackage/dbpass || true
+            db_input high geonature-db/POSTGRES_PORT || true
+            db_input high geonature-db/POSTGRES_USER || true
+            db_input high geonature-db/POSTGRES_PASSWORD || true
+            db_input high geonature-db/POSTGRES_DB || true
             db_go
         fi
 
-        db_get testpackage/dbuser
-        dbuser="$RET"
-        db_get testpackage/dbpass
-        dbpass="$RET"
-
-        echo "values $dbuser $dbpass"
+        db_get geonature-db/POSTGRES_PORT; export POSTGRES_PORT="$RET"
+        db_get geonature-db/POSTGRES_USER; export POSTGRES_USER="$RET"
+        db_get geonature-db/POSTGRES_PASSWORD; export POSTGRES_PASSWORD="$RET"
+        db_get geonature-db/POSTGRES_DB; export POSTGRES_DB="$RET"
 
 
-        dbc_pgsql_createdb_encoding="UTF8"
+        echo "values $POSTGRES_DB $POSTGRES_USER"
 
-        dbc_dbuser=$dbuser
-        dbc_dballow="geonature"
-        dbc_dbpass=$dbpass
-        dbc_authmethod_user='password'
 
-        dbc_dbadmin='postgres'
-        dbc_authmethod_admin='ident'
-
-        dbc_dbname='geonature-db'
-        dbc_dbserver='localhost'
-        dbc_dbport='5432'
-
-        dbc_install='true'
-        echo "--------------------------------"
-        echo $@
-        echo "--------------------------------"
-        dbc_go geonature-db $@ || true
     ;;
 
 
