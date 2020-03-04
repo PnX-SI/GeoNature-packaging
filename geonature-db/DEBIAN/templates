@@ -69,6 +69,11 @@ Default: true
 Description: Souhaitez vous vectoriser le MNT ?
  Vectoriser le MNT permet d'améliorer les performances de calcul des altitudes. Cette opération est assez longue.
 
+Template: geonature-db/SAMPLE_DATA
+Type: boolean
+Default: true
+Description: Souhaitez vous installer des données examples dans la base ?
+
 Template: geonature-db/CONTINUER
 Type: boolean
 Default: true

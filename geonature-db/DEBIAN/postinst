@@ -39,6 +39,7 @@ if [ -f /usr/share/debconf/confmodule ]; then
     db_input high geonature-db/REFGEO_GRID || true
     db_input high geonature-db/REFGEO_DEM || true
     db_input high geonature-db/REFGEO_VECTORISE_DEM || true
+    db_input high geonature-db/SAMPLE_DATA || true
     db_go
 fi
 
@@ -66,6 +67,8 @@ db_get geonature-db/REFGEO_DEM
 export REFGEO_DEM="$RET"
 db_get geonature-db/REFGEO_VECTORISE_DEM
 export REFGEO_VECTORISE_DEM="$RET"
+db_get geonature-db/SAMPLE_DATA
+export SAMPLE_DATA="$RET"
 
 # Generate config files
 echo "Generate configuration" >&2

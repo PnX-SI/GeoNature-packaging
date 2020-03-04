@@ -271,6 +271,16 @@ function create_database () {
     cp $SCRIPT_PATH/core/sensitivity_data.sql /tmp/geonature/sensitivity_data.sql
     echo "Insert 'gn_sensitivity' data... (This may take a few minutes)"
     su postgres -c "psql -d $POSTGRES_DB -f /tmp/geonature/sensitivity_data.sql" &>> $LOG_PATH/install_db.log
+
+    #Installation des données exemples
+    if [ "$SAMPLE_DATA" = true ];
+    then
+        write_log "Inserting sample datasets..."
+        export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/meta_data.sql  &>> $LOG_PATH/install_db.log
+        write_log "Inserting sample dataset of taxons for taxonomic schema..."
+        cp $SCRIPT_PATH/taxonomie/taxhubdata_taxons_example.sql /tmp/taxhub
+        export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/taxhub/taxhubdata_taxons_example.sql  &>> $LOG_PATH/install_db.log
+    fi
 }
 
 function drop_database () {
