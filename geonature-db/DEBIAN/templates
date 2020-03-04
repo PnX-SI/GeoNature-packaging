@@ -24,6 +24,11 @@ Type: string
 Default: geonature2db
 Description: Nom de la base de données geonature
 
+Template: geonature-db/POSTGRES_LOCALE
+Type: string
+Default: fr_FR.UTF-8
+Description: Locale de la base de données geonature
+
 Template: geonature-db/ADD_USERSHUB_SAMPLE_DATA
 Type: boolean
 Default: true
