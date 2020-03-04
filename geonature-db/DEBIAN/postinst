@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # postinst script for geonature-db
 #
 # see: dh_installdeb(1)
@@ -19,6 +19,10 @@ set -o xtrace
 # the debian-policy package
 
 . /usr/share/debconf/confmodule
+. /usr/share/geonature/geonature-db/install_db_functions.sh
+
+export SCRIPT_PATH=/usr/share/geonature/geonature-db/sql
+export POSTGRES_HOST="localhost"
 
 if [ -f /usr/share/debconf/confmodule ]; then
     db_version 2.0
@@ -26,10 +30,10 @@ if [ -f /usr/share/debconf/confmodule ]; then
     db_input high geonature-db/POSTGRES_USER || true
     db_input high geonature-db/POSTGRES_PASSWORD || true
     db_input high geonature-db/POSTGRES_DB || true
+    db_input high geonature-db/ADD_USERSHUB_SAMPLE_DATA || true
     db_go
 fi
 
-export POSTGRES_HOST="localhost"
 db_get geonature-db/POSTGRES_PORT
 export POSTGRES_PORT="$RET"
 db_get geonature-db/POSTGRES_USER
@@ -38,6 +42,8 @@ db_get geonature-db/POSTGRES_PASSWORD
 export POSTGRES_PASSWORD="$RET"
 db_get geonature-db/POSTGRES_DB
 export POSTGRES_DB="$RET"
+db_get geonature-db/ADD_USERSHUB_SAMPLE_DATA
+export ADD_USERSHUB_SAMPLE_DATA="$RET"
 
 # Generate config files
 echo "Generate configuration" >&2
@@ -49,6 +55,21 @@ done
 case "$1" in
 configure)
 
+    if [[ create_role -ne 0 ]]; then
+        db_version 2.0
+        db_input high geonature-db/CONTINUER || true
+        db_go
+        if [[ $RET ]]; then
+            echo "L'utilisateur existe. Vous avez choisi d'interrompre l'installation de la base de données"
+            exit 0
+        fi
+    fi
+
+    if ! database_exists ${POSTGRES_DB}; then
+        create_database
+    else
+        echo "La base de données existe. Elle ne sera pas supprimée."
+    fi
     echo "configure done"
 
     ;;
