@@ -18,3 +18,16 @@ Template: geonature-db/POSTGRES_DB
 Type: string
 Default: geonature2db
 Description: Nom de la base de données geonature
+
+Template: geonature-db/ADD_USERSHUB_SAMPLE_DATA
+Type: boolean
+Default: true
+Description: Souhaitez vous installer les utilisateurs exemples.
+ Choisir yes si vous souhaitez disposer d'utlisateur exemple tel que l'utilisateur "admin" avec le mot de passe "admin".
+ Choisir no si vous ne souhaitez avoir aucun utilisateur. Attention, vous devrez ajouter au moins un utilisateur manuellement dans la base pour pouvoir vous authentifier dans les applications qui le nécessitent.
+
+Template: geonature-db/CONTINUER
+Type: boolean
+Default: true
+Description: L'utilisateur existe déjà Souhaiter vous continuer l'installation.
+ Attention le mot de passe de l'utilisateur n'a pas été mis à jour.
