@@ -4,6 +4,7 @@
 # see: dh_installdeb(1)
 
 set -e
+set -o xtrace
 
 # summary of how this script can be called:
 #        * <postinst> `configure' <most-recently-configured-version>
@@ -17,40 +18,46 @@ set -e
 # for details, see https://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-
 . /usr/share/debconf/confmodule
 
+if [ -f /usr/share/debconf/confmodule ]; then
+    db_version 2.0
+    db_input high geonature-db/POSTGRES_PORT || true
+    db_input high geonature-db/POSTGRES_USER || true
+    db_input high geonature-db/POSTGRES_PASSWORD || true
+    db_input high geonature-db/POSTGRES_DB || true
+    db_go
+fi
+
+export POSTGRES_HOST="localhost"
+db_get geonature-db/POSTGRES_PORT
+export POSTGRES_PORT="$RET"
+db_get geonature-db/POSTGRES_USER
+export POSTGRES_USER="$RET"
+db_get geonature-db/POSTGRES_PASSWORD
+export POSTGRES_PASSWORD="$RET"
+db_get geonature-db/POSTGRES_DB
+export POSTGRES_DB="$RET"
+
+# Generate config files
+echo "Generate configuration" >&2
+CONF_DIR=/etc/geonature
+for f in "geonature-db.conf"; do
+    envsubst <$CONF_DIR/$f.init >$CONF_DIR/$f
+done
+
 case "$1" in
-    configure)
+configure)
 
-        if [ -f /usr/share/debconf/confmodule ]; then
-            db_version 2.0
-            db_input high geonature-db/POSTGRES_PORT || true
-            db_input high geonature-db/POSTGRES_USER || true
-            db_input high geonature-db/POSTGRES_PASSWORD || true
-            db_input high geonature-db/POSTGRES_DB || true
-            db_go
-        fi
-
-        db_get geonature-db/POSTGRES_PORT; export POSTGRES_PORT="$RET"
-        db_get geonature-db/POSTGRES_USER; export POSTGRES_USER="$RET"
-        db_get geonature-db/POSTGRES_PASSWORD; export POSTGRES_PASSWORD="$RET"
-        db_get geonature-db/POSTGRES_DB; export POSTGRES_DB="$RET"
-
-
-        echo "values $POSTGRES_DB $POSTGRES_USER"
-
+    echo "configure done"
 
     ;;
 
+abort-upgrade | abort-remove | abort-deconfigure) ;;
 
-
-    abort-upgrade|abort-remove|abort-deconfigure)
-    ;;
-
-    *)
-        echo "postinst called with unknown argument \`$1'" >&2
-        exit 1
+*)
+    echo "postinst called with unknown argument \`$1'" >&2
+    exit 1
     ;;
 esac
 

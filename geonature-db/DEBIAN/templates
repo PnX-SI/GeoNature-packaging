@@ -1,3 +1,8 @@
+Template: geonature-db/POSTGRES_HOST
+Type: string
+Default: localhost
+Description: PostgreSQL host
+
 Template: geonature-db/POSTGRES_PORT
 Type: string
 Default: 5432
