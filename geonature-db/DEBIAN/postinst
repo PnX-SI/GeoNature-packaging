@@ -22,6 +22,7 @@ set -o xtrace
 . /usr/share/geonature/geonature-db/install_db_functions.sh
 
 export SCRIPT_PATH=/usr/share/geonature/geonature-db/sql
+export LOG_PATH=/var/log/geonature/geonature-db
 export POSTGRES_HOST="localhost"
 
 if [ -f /usr/share/debconf/confmodule ]; then
@@ -54,12 +55,16 @@ done
 
 case "$1" in
 configure)
-
-    if [[ create_role -ne 0 ]]; then
+    set +e
+    create_role
+    cr=$?
+    set -e
+    if [[ cr -ne 0 ]]; then
         db_version 2.0
         db_input high geonature-db/CONTINUER || true
         db_go
-        if [[ $RET ]]; then
+        db_get geonature-db/CONTINUER
+        if [[ "$RET" = "false" ]]; then
             echo "L'utilisateur existe. Vous avez choisi d'interrompre l'installation de la base de données"
             exit 0
         fi
@@ -70,7 +75,6 @@ configure)
     else
         echo "La base de données existe. Elle ne sera pas supprimée."
     fi
-    echo "configure done"
 
     ;;
 
