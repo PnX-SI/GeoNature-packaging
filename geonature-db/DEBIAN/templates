@@ -49,14 +49,14 @@ Description: Souhaitez vous installer les utilisateurs exemples ?
 Template: geonature-db/REFGEO_MUNICIPALITY
 Type: boolean
 Default: true
-Description: Souhaitez vous installer les communes de métroples ?
+Description: Souhaitez vous installer les communes de métroples (recommandé) ?
  Choisir yes si vous souhaitez disposer de la couche des communes.
- Choisir no si vous êtes sur un territoire hors France. Si vous êtes en outre-mer, il est préférable d'installer les communes de métropoles puis de les remplacer par les communes de votre territoire.
+ Choisir no si vous êtes sur un territoire hors France. Si vous êtes en outre-mer, il est préférable d'installer les communes de métropoles puis de les remplacer par les communes de votre territoire après l'installation de la base.
 
 Template: geonature-db/REFGEO_GRID
 Type: boolean
 Default: true
-Description: Souhaitez vous installer les mailles INPN (1*1 km, 5*5 km, 10*10km) ?
+Description: Souhaitez vous installer les mailles INPN de 1*1 km, 5*5 km et 10*10km (recommandé) ?
 
 Template: geonature-db/REFGEO_DEM
 Type: boolean
@@ -67,7 +67,7 @@ Template: geonature-db/REFGEO_VECTORISE_DEM
 Type: boolean
 Default: true
 Description: Souhaitez vous vectoriser le MNT ?
- Vectoriser le MNT permet de gagner d'améliorer les performances de calcul des altitudes. Cette opération est assez longue.
+ Vectoriser le MNT permet d'améliorer les performances de calcul des altitudes. Cette opération est assez longue.
 
 Template: geonature-db/CONTINUER
 Type: boolean
