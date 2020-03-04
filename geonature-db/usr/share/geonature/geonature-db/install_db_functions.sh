@@ -142,7 +142,19 @@ function create_database () {
     write_log "Inserting INPN habitat data..."
     su postgres -c "psql -d $POSTGRES_DB  -f /tmp/habref/data_inpn_habref.sql" &>> $LOG_PATH/install_db.log
 
-    
+    # Nomenclatures schema
+    echo "Getting 'nomenclature' schema creation scripts..."
+    cp $SCRIPT_PATH/nomenclatures/nomenclatures.sql /tmp/nomenclatures
+    cp $SCRIPT_PATH/nomenclatures/data_nomenclatures.sql /tmp/nomenclatures
+    cp $SCRIPT_PATH/nomenclatures/nomenclatures_taxonomie.sql /tmp/nomenclatures
+    cp $SCRIPT_PATH/nomenclatures/data_nomenclatures_taxonomie.sql /tmp/nomenclatures
+    write_log "Creating 'nomenclatures' schema"
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/nomenclatures/nomenclatures.sql  &>> $LOG_PATH/install_db.log
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/nomenclatures/nomenclatures_taxonomie.sql  &>> $LOG_PATH/install_db.log
+    write_log "Inserting 'nomenclatures' data..."
+    sudo sed -i "s/MYDEFAULTLANGUAGE/$NOMENCLATURE_LANGUAGE/g" /tmp/nomenclatures/data_nomenclatures.sql
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/nomenclatures/data_nomenclatures.sql  &>> $LOG_PATH/install_db.log
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/nomenclatures/data_nomenclatures_taxonomie.sql  &>> $LOG_PATH/install_db.log
 
 }
 

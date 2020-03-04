@@ -29,6 +29,11 @@ Type: string
 Default: fr_FR.UTF-8
 Description: Locale de la base de données geonature
 
+Template: geonature-db/NOMENCLATURE_LANGUAGE
+Type: string
+Default: fr
+Description: Langue des nomenclatures (fr=default, autre : en, it, ...)
+
 Template: geonature-db/ADD_USERSHUB_SAMPLE_DATA
 Type: boolean
 Default: true
