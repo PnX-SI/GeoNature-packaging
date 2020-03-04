@@ -1,10 +1,38 @@
-Template: testpackage/dbuser
+Template: geonature-db/POSTGRES_HOST
 Type: string
-Default: geonature
+Default: localhost
+Description: PostgreSQL host
+
+Template: geonature-db/POSTGRES_PORT
+Type: string
+Default: 5432
+Description: PostgreSQL port
+
+Template: geonature-db/POSTGRES_USER
+Type: string
+Default: geonatuser
 Description: Nom d'utilisateur de la base de données ?
  Précisez le nom du superutilisateur de la base de données PostgreSQL, par défault postgres
 
-Template: testpackage/dbpass
+Template: geonature-db/POSTGRES_PASSWORD
 Type: password
 Description: Mot de passe de l'utilisateur de la base de données ?
  Précisez ici le mot de passe de l'utilisateur de la base de données GeoNature, par défault "geonature"
+
+Template: geonature-db/POSTGRES_DB
+Type: string
+Default: geonature2db
+Description: Nom de la base de données geonature
+
+Template: geonature-db/ADD_USERSHUB_SAMPLE_DATA
+Type: boolean
+Default: true
+Description: Souhaitez vous installer les utilisateurs exemples.
+ Choisir yes si vous souhaitez disposer d'utlisateur exemple tel que l'utilisateur "admin" avec le mot de passe "admin".
+ Choisir no si vous ne souhaitez avoir aucun utilisateur. Attention, vous devrez ajouter au moins un utilisateur manuellement dans la base pour pouvoir vous authentifier dans les applications qui le nécessitent.
+
+Template: geonature-db/CONTINUER
+Type: boolean
+Default: true
+Description: Souhaiter vous continuer l'installation ?
+ L'utilisateur que vous avez choisi existe déjà. Il n'a pas été recréé et son mot de passe n'a pas été changé. Le mot de passe n'est donc pas forcement celui que vous avez indiqué. Assurez vous de bien connaitre le mot de passe de cet utilisateur. Sinon relancez l'installation et choisissez de créer un autre utilisateur.
