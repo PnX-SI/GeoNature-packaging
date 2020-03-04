@@ -14,8 +14,8 @@ GEONATURE_APPLICATION_ID=3
 USERSHUB_URL=http://127.0.0.1:5001
 # Credentials to use to login and be able to add
 # and delete users
-USERSHUB_TEST_LOGIN=admin
-USERSHUB_TEST_PASSWORD=admin
+TEST_LOGIN=admin
+TEST_PASSWORD=admin
 # The PATH of the form to send the credentials to
 # This will be appended to USERSHUB_URL
 USERSHUB_LOGIN_URL=/pypn/auth/login
