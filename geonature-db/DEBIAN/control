@@ -10,7 +10,7 @@ Homepage: https://github.com/PnX-SI/UsersHub/
 Package: geonature-db
 Version: 0.0.1
 Architecture: all
-Depends: postgresql (>=9.6), postgis, debconf (>= 0.5) | debconf-2.0, sensible-utils, dbconfig-pgsql | dbconfig-no-thanks | dbconfig-common (<< 2.0.0)
+Depends: postgresql (>=9.5), postgis, debconf (>= 0.5) | debconf-2.0, sensible-utils, dbconfig-pgsql | dbconfig-no-thanks | dbconfig-common (<< 2.0.0)
 Description: GeoNature database installation
  This package install the PostgreSQL GeoNature database.
  .
