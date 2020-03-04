@@ -14,7 +14,7 @@ import os
 from types import SimpleNamespace
 
 GEONATURE_CONFIG = SimpleNamespace(
-    url=os.environ.get("GEONATURE_URL", "http://127.0.0.0:8000"),
+    url=os.environ.get("GEONATURE_URL", "http://127.0.0.1:8000"),
     test_login=os.environ.get("TEST_LOGIN", "admin"),
     test_password=os.environ.get("TEST_PASSWORD", "admin"),
     login_url=os.environ.get("GEONATURE_LOGIN_URL", "/api/auth/login"),

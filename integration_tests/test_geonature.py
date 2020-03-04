@@ -47,6 +47,7 @@ def test_page(client):
     assert response.status_code == 200
 
     # init BeautifulSoup parser
+    text = response.text
     soup = BeautifulSoup(text, "html.parser")
 
     # test title

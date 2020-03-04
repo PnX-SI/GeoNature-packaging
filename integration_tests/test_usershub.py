@@ -42,11 +42,11 @@ def test_login(unlogged_client):
 
 
 def test_all_pages(client):
-        '''
-        For all pages of USERSHUB: checks if the page can be reached and if it has specified content
-        
-        Args:
-            client : pytest fixture to process the test as a connected client 
+    '''
+    For all pages of USERSHUB: checks if the page can be reached and if it has specified content
+    
+    Args:
+        client : pytest fixture to process the test as a connected client 
     '''
     urls = [
         ("/users/list", "Utilisateurs"),
