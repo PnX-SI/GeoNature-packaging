@@ -21,6 +21,11 @@ function prepare_path (){
         mkdir /tmp/usershub
     fi
 
+    if [ ! -d '/tmp/habref/' ]
+    then
+        mkdir /tmp/habref
+    fi
+
     if [ ! -d '/var/log/geonature/geonature-db/' ]
     then
         mkdir -p /var/log/geonature/geonature-db
@@ -120,6 +125,24 @@ function create_database () {
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/taxhub/taxhubdata_atlas.sql  &>> $LOG_PATH/install_db.log
     write_log "Creating a view that represent the taxonomic hierarchy..."
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/taxhub/materialized_views.sql  &>> $LOG_PATH/install_db.log   
+
+    # Habref schema
+    echo "Download and extract habref file..."
+    if [ ! -f '/tmp/habref/HABREF_50.zip' ]
+    then
+      wget https://geonature.fr/data/inpn/habitats/HABREF_50.zip -P /tmp/habref
+    else
+      echo HABREF_50.zip exists
+    fi
+    unzip -o /tmp/habref/HABREF_50.zip -d /tmp/habref
+    cp $SCRIPT_PATH/occhab/habref.sql -P /tmp/habref
+    cp $SCRIPT_PATH/occhab/data_inpn_habref.sql -P /tmp/habref 
+    write_log "Creating 'habitat' schema..."
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/habref/habref.sql &>> $LOG_PATH/install_db.log
+    write_log "Inserting INPN habitat data..."
+    su postgres -c "psql -d $POSTGRES_DB  -f /tmp/habref/data_inpn_habref.sql" &>> $LOG_PATH/install_db.log
+
+    
 
 }
 
