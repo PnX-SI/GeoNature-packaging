@@ -1,0 +1,16 @@
+Source: usershub
+Section: unknown
+Priority: optional
+Maintainer: PnX-SI Team <geonature@ecrins-parcnational.fr>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.1.2
+Homepage: https://github.com/PnX-SI/UsersHub/
+#Vcs-Git: https://anonscm.debian.org/git/collab-maint/usershub-app.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/geonature-db.git
+Package: usershub
+Version: 0.0.1
+Architecture: all
+Depends: python3 (>=3.5), libpq-dev, virtualenv,  supervisor
+Description: GeoNature database installation
+ This package install the UsersHub application
+ .
