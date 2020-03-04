@@ -66,6 +66,12 @@ def create_deb_fs_tree(template, output_dir, version, release, architecture):
     unziped_package.rename(clean_name)
     unziped_package = Path(clean_name)
 
+    # dpkg-deb --build doesn't want anything with 777 permissions
+    for path in (unziped_package / "DEBIAN").rglob("*"):
+        path.chmod(0o775)
+
+    return unziped_package
+
 
 def recursive_md5(directory):
     """ Get the recursive checksums of all the files in directory
@@ -80,3 +86,23 @@ def recursive_md5(directory):
             checksum = md5(path.read_bytes()).hexdigest()
             path = str(path).replace(str(directory).rstrip("/") + "/", "")
             yield path, checksum
+
+
+def package_deb_tree(directory):
+    """ Apply the dpkg build process to a debian complient FS tree """
+    try:
+        sh.dpkg_deb("--build", directory)
+    except sh.ErrorReturnCode as e:
+        sys.exit("Error while finalizing up the package with dpkg: %s" % e)
+
+    return str(directory) + ".deb"
+
+
+def move_package_to_build_dir(deb_package, build_dir):
+
+    sh.mkdir("-p", dest_dir)
+    sh.cp("-r", deb_package, build_dir)
+    print(
+        'Deb package is available at "%s"' % (Path(dest_dir) / Path(deb_package).name)
+    )
+
