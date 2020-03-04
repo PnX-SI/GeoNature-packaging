@@ -156,6 +156,15 @@ function create_database () {
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/nomenclatures/data_nomenclatures.sql  &>> $LOG_PATH/install_db.log
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/nomenclatures/data_nomenclatures_taxonomie.sql  &>> $LOG_PATH/install_db.log
 
+    # Commons schema
+    write_log "Creating 'commons' schema..."
+    cp $SCRIPT_PATH/core/commons.sql /tmp/geonature/commons.sql
+    sudo sed -i "s/MYLOCALSRID/$LOCAL_SRID/g" /tmp/geonature/commons.sql
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/geonature/commons.sql  &>> $LOG_PATH/install_db.log
+    
+    # Meta schema
+    write_log "Creating 'meta' schema..."
+    export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/meta.sql  &>> $LOG_PATH/install_db.log
 }
 
 function drop_database () {

@@ -33,6 +33,7 @@ if [ -f /usr/share/debconf/confmodule ]; then
     db_input high geonature-db/POSTGRES_DB || true
     db_input high geonature-db/POSTGRES_LOCALE || true
     db_input high geonature-db/NOMENCLATURE_LANGUAGE || true
+    db_input high geonature-db/LOCAL_SRID || true
     db_input high geonature-db/ADD_USERSHUB_SAMPLE_DATA || true
     db_go
 fi
@@ -49,6 +50,8 @@ db_get geonature-db/POSTGRES_LOCALE
 export POSTGRES_LOCALE="$RET"
 db_get geonature-db/NOMENCLATURE_LANGUAGE
 export NOMENCLATURE_LANGUAGE="$RET"
+db_get geonature-db/LOCAL_SRID
+export LOCAL_SRID="$RET"
 db_get geonature-db/ADD_USERSHUB_SAMPLE_DATA
 export ADD_USERSHUB_SAMPLE_DATA="$RET"
 

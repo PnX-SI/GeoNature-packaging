@@ -34,6 +34,11 @@ Type: string
 Default: fr
 Description: Langue des nomenclatures (fr=default, autre : en, it, ...)
 
+Template: geonature-db/LOCAL_SRID
+Type: string
+Default: 2154
+Description: SRID local pour initialiser la projection des champs geom de la base (2154=default)
+
 Template: geonature-db/ADD_USERSHUB_SAMPLE_DATA
 Type: boolean
 Default: true
