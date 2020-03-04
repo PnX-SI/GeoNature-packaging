@@ -25,7 +25,7 @@ manpage.1: manpage.sgml
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>SECTION</manvolnum>">
   <!ENTITY dhemail     "<email>geonature@ecrins-parcnational.fr</email>">
-  <!ENTITY dhusername  "pnc-si">
+  <!ENTITY dhusername  "pnx-si">
   <!ENTITY dhucpackage "<refentrytitle>Geonature-db</refentrytitle>">
   <!ENTITY dhpackage   "geonature-db">
 

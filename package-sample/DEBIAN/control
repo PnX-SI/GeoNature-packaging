@@ -1,7 +1,7 @@
 Source: geonature-db
 Section: unknown
 Priority: optional
-Maintainer: pnc-si <geonature@ecrins-parcnational.fr>
+Maintainer: pnx-si <geonature@ecrins-parcnational.fr>
 Build-Depends: debhelper (>= 10)
 Standards-Version: 4.1.2
 Homepage: <insert the upstream URL, if relevant>
