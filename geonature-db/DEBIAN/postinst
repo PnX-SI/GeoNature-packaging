@@ -81,9 +81,9 @@ case "$1" in
 configure)
     set +e
     create_role
-    cr=$?
+    ret=$?
     set -e
-    if [[ cr -ne 0 ]]; then
+    if [[ ret -ne 0 ]]; then
         db_version 2.0
         db_input high geonature-db/CONTINUER || true
         db_go
@@ -96,6 +96,10 @@ configure)
 
     if ! database_exists ${POSTGRES_DB}; then
         create_database
+        # ret=$?
+        # if [[ ret -ne 0 ]]; then
+        #     echo "fuck"
+        # fi
     else
         echo "La base de données ${POSTGRES_DB} existe. Elle ne sera pas supprimée."
         exit 1
