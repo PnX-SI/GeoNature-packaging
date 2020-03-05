@@ -16,7 +16,7 @@ from build_tools.fs_utils import (
 )
 
 
-def build_usershub_db_deb(
+def build_geonaturedb_deb(
     version,
     release,
     keep_temp_dir,
