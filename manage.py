@@ -3,6 +3,7 @@
 import click  # See doc: https://click.palletsprojects.com
 
 from build_tools.build_geonaturedb import build_geonaturedb_deb
+from build_tools.build_usershub import build_usershub_deb
 from build_tools.fs_utils import ROOT_DIR
 
 
@@ -72,7 +73,7 @@ def cli():
 @click.argument(
     "project",
     metavar="PROJECT_NAME",
-    type=click.Choice(["geonaturedb"], case_sensitive=False),
+    type=click.Choice(["geonaturedb", "usershub"], case_sensitive=False),
 )
 @click.argument(
     "version", metavar="VERSION_NUMBER",
@@ -117,6 +118,28 @@ def build(
             taxhub_checkout,
             geonature_checkout,
         )
+
+    if project == "usershub":
+        build_usershub_deb(
+            version,
+            release,
+            keep_temp_dir,
+            temp_dir,
+            dest_dir,
+            arch,
+            usershub_repo_uri,
+            usershub_checkout,
+        )
+
+
+# @cli.command()
+# def setup_env()
+#     """ Install the necessary machinery to run packaging """
+
+#     wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+
+#     export NVM_DIR="$HOME/.nvm"
+#     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 
 if __name__ == "__main__":

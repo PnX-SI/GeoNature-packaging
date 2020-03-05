@@ -106,3 +106,33 @@ def move_package_to_build_dir(deb_package, build_dir):
         'Deb package is available at "%s"' % (Path(build_dir) / Path(deb_package).name)
     )
 
+
+def copy_files(source_to_dest):
+    """ Copy rescursively directories
+
+        `source_to_dest` must be a dict such as keys are
+        directories or files to be copied and values are destinations where
+        to copy them to.
+
+        If a key is a directory, it is not copied, but its content is.
+
+        Values must be directories, they will the content of the source directory
+        or the source file.
+
+        Any missing directories provided as values will be recursively created.
+    """
+    for source, dest in source_to_dest.items():
+        source = Path(source)
+        if not source.is_file() and not source.is_dir():
+            sys.exit(
+                "Unable to copy '{0}' to '{1}': '{0}' is not a valid file or directory".format(
+                    source, dest
+                )
+            )
+        sh.mkdir(dest, "-p")
+        if source.is_file():
+            sh.cp(source, dest)
+        else:
+            for content in source.iterdir():
+                sh.cp(content, dest, "-r")
+
