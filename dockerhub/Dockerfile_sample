@@ -1,4 +1,4 @@
-FROM debian:DEBIAN_VERSION
+FROM DEPOT:VERSION
 MAINTAINER Joel CLEMENT <joelclems@gmail.com>
 
 # ARG URL
@@ -6,8 +6,8 @@ MAINTAINER Joel CLEMENT <joelclems@gmail.com>
 # ARG VCS_REF
 # ARG BUILD_DATE
 
-LABEL org.label-schema.name="Debian 9 Stretch whith sudo" \
-      org.label-schema.description="Debian 9 Stretch whith sudo Docker base image" \
+LABEL org.label-schema.name="DEPOT VERSION whith sudo" \
+      org.label-schema.description="DEPOT VERSION whith sudo Docker base image" \
       org.label-schema.vendor="Joel CLEMENT" \
       org.label-schema.license="MIT" \
     #   org.label-schema.url=$URL \
@@ -16,11 +16,7 @@ LABEL org.label-schema.name="Debian 9 Stretch whith sudo" \
     #   org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0"
 
-
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-       apt-utils \
        sudo \
     && rm -rf /var/lib/apt/lists/*
-
-COPY sources.list /etc/apt/sources.list

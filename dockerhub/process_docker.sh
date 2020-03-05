@@ -2,41 +2,51 @@ set -e
 
 # docker hub configuration
 organisation=geonature
-depot=debian
+depots="debian ubuntu"
 
 # debian versions
 # buster 10
 # stretch 9
-versions="buster stretch"
+versions_debian="buster stretch"
+
+versions_ubuntu="18.04"
 
 # docker login
 docker login
 
-# process each version
-for version in ${versions}
+# process each depot
+for depot in ${depots}
 do
-    docker_name=${organisation}/${depot}:${version} 
-    echo build ${docker_name}
 
-    # create dir
-    dir_name=debian-${version}
-    rm -Rf ${dir_name}
-    mkdir ${dir_name}
-    
-    # create Dockerfile (replace DEBIAN_VERSION with $version)
-    sed "s/DEBIAN_VERSION/${version}/g" ./Dockerfile_sample > ${dir_name}/Dockerfile
+    versions_name=versions_${depot}
 
-    # create source.list
-    sed "s/DEBIAN_VERSION/${version}/g" ./sources.list_sample > ${dir_name}/sources.list
+    # process each version
+    for version in ${!versions_name}
+    do
 
-    # build docker
-    cd ${dir_name}
-    docker build -t ${docker_name} .
+        docker_name=${organisation}/${depot}:${version} 
+        echo "process ${docker_name} : init" 
 
-    # push docker
-    echo docker push ${docker_name}
+        # create dir
+        dir_name=${depot}-${version}
+        rm -Rf ${dir_name}
+        mkdir ${dir_name}
+        
+        # create Dockerfile (replace DEPOT_VERSION with $version)
+        cp ./Dockerfile_sample ${dir_name}/Dockerfile
+        sed -i "s/VERSION/${version}/g" ${dir_name}/Dockerfile
+        sed -i "s/DEPOT/${depot}/g" ${dir_name}/Dockerfile
 
-    cd ..
-done
+        # build docker
+        cd ${dir_name}
+        docker build -t ${docker_name} .
+        # docker build -t ${docker_name} . --no-cache
+        # docker run ${docker_name}
 
-echo "process done : built debian images for versions ${versions}" 
+        # push docker
+        docker push ${docker_name}
+
+        cd ..
+        echo "process ${docker_name} : done" 
+    done # versions
+done # depots

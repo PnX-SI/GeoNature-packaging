@@ -1,3 +1,3 @@
-deb https://deb.debian.org/debian DEBIAN_VERSION main contrib non-free
-deb https://deb.debian.org/debian DEBIAN_VERSION-updates main contrib non-free
-deb https://deb.debian.org/debian-security DEBIAN_VERSION/updates main contrib non-free
+deb http://deb.debian.org/debian DEPOT_VERSION main contrib non-free
+deb http://deb.debian.org/debian DEPOT_VERSION-updates main contrib non-free
+deb http://deb.debian.org/debian-security DEPOT_VERSION/updates main contrib non-free
