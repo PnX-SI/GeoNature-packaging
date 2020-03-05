@@ -1,7 +1,11 @@
-import shlex
-
+import os
 import sh
 import re
+
+import shlex
+
+
+from pathlib2 import Path
 
 
 def command_exists(command):
@@ -14,8 +18,9 @@ def command_exists(command):
 
 def ensure_nvm():
     """ Make sure nvm is installed """
-    if not command_exists("nvm"):
-        print("Install nvm")
+    nvm_source = Path(os.environ.get("NVM_DIR") or "~/.nvm/") / "nvm.sh"
+    if not nvm_source.is_file():
+        print("Installing nvm")
         sh.bash(
             sh.wget(
                 "-qO-",
