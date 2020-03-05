@@ -13,19 +13,43 @@ ROOT_DIR = Path(__file__).absolute().parent.parent
 
 
 @contextmanager
-def in_temp_dir(root=None, delete=True):
-    """ Create a temp dir, and cd to it """
-    temp_dir = Path(tempfile.mkdtemp(dir=root))
+def in_dir(directory):
+    """ Cd in a dir during a 'with' block
+
+        Example:
+
+            >>> with in_dir('/'):
+            ...     # here we are in '/'
+            >>> # here we are not in '/' anymore
+    """
     old_dir = os.getcwd()
-    os.chdir(str(temp_dir))
+    os.chdir(str(directory))
     try:
-        yield temp_dir
+        yield Path(old_dir)
     finally:
         os.chdir(old_dir)
-        if delete and temp_dir.absolute() != "/":
-            sh.rm(temp_dir, "-fr")
-        else:
-            print('Temporary files kept in "%s"' % temp_dir)
+
+
+@contextmanager
+def in_temp_dir(root=None, delete=True):
+    """ Create a temp dir, and cd to it
+
+        Example:
+
+            >>> with in_temp_dir() as temp_dir:
+            ...     # here we are in a automatically created temporary dir
+            >>> # here we are not in it anymore, and it's been deleted
+    """
+    temp_dir = Path(tempfile.mkdtemp(dir=root))
+
+    with in_dir(temp_dir):
+        try:
+            yield temp_dir
+        finally:
+            if delete and temp_dir.absolute() != "/":
+                sh.rm(temp_dir, "-fr")
+            else:
+                print('Temporary files kept in "%s"' % temp_dir)
 
 
 def clone_git_repository(uri, ref, dest):
@@ -44,6 +68,7 @@ def clone_git_repository(uri, ref, dest):
 
 def create_deb_fs_tree(template, output_dir, version, release, architecture):
 
+    print("Create deb file system tree")
     # Use cookiecutter to turn the template into a real directory tree
     template = Path(template)
     unziped_package = Path(
@@ -91,6 +116,7 @@ def recursive_md5(directory):
 def package_deb_tree(directory):
     """ Apply the dpkg build process to a debian complient FS tree """
     try:
+        print("Zip deb package")
         sh.dpkg_deb("--build", directory)
     except sh.ErrorReturnCode as e:
         sys.exit("Error while finalizing up the package with dpkg: %s" % e)
@@ -99,9 +125,9 @@ def package_deb_tree(directory):
 
 
 def move_package_to_build_dir(deb_package, build_dir):
-
+    """ Create the build dir, then move the deb package to it """
     sh.mkdir("-p", build_dir)
-    sh.cp("-r", deb_package, build_dir)
+    sh.cp(deb_package, build_dir)
     print(
         'Deb package is available at "%s"' % (Path(build_dir) / Path(deb_package).name)
     )

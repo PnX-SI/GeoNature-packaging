@@ -1,5 +1,6 @@
 import sys
 import tempfile
+import uuid
 
 import sh
 
@@ -14,7 +15,10 @@ from build_tools.fs_utils import (
     package_deb_tree,
     move_package_to_build_dir,
     copy_files,
+    in_dir,
 )
+
+from build_tools.sh_utils import ensure_npm
 
 
 def build_usershub_deb(
@@ -30,11 +34,18 @@ def build_usershub_deb(
 
     with in_temp_dir(root=temp_dir, delete=not keep_temp_dir) as dir_path:
 
-        # app
-        # server.py
-        # requirements.txt
-
         clone_git_repository(usershub_repo_uri, usershub_checkout, dir_path)
+
+        # Build static files
+        print("Build static files")
+        repo_dir = dir_path / "UsersHub"
+        static_dir = repo_dir / "app/static"
+        required_npm_version = (static_dir / ".nvmrc").read_text()
+        npm_run = ensure_npm(required_npm_version)
+        with in_dir(static_dir):
+            npm_run("ci")
+
+        # Create an skeleton file system for the deb file from the template
         deb_tree_path = create_deb_fs_tree(
             template=str(ROOT_DIR / "deb_packages_files/usershub/"),
             output_dir=str(dir_path),
@@ -42,12 +53,14 @@ def build_usershub_deb(
             release=release,
             architecture=arch,
         )
+        # Populate it
         copy_files(
             {
-                dir_path / "UsersHub/app": deb_tree_path / "app",
-                dir_path / "UsersHub/server.py": deb_tree_path,
-                dir_path / "UsersHub/requirements.txt": deb_tree_path,
+                repo_dir / "app": deb_tree_path / "app",
+                repo_dir / "server.py": deb_tree_path,
+                repo_dir / "requirements.txt": deb_tree_path,
             }
         )
+        # Zip the package and copy it
         deb_package = package_deb_tree(deb_tree_path)
         move_package_to_build_dir(deb_package, dest_dir)
