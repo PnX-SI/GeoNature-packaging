@@ -34,5 +34,5 @@ Description: Souhaitez vous installer les utilisateurs exemples.
 Template: geonature-db/CONTINUER
 Type: boolean
 Default: true
-Description: L'utilisateur existe déjà Souhaiter vous continuer l'installation.
- Attention le mot de passe de l'utilisateur n'a pas été mis à jour.
+Description: Souhaiter vous continuer l'installation ?
+ L'utilisateur que vous avez choisi existe déjà. Il n'a pas été recréé et son mot de passe n'a pas été changé. Le mot de passe n'est donc pas forcement celui que vous avez indiqué. Assurez vous de bien connaitre le mot de passe de cet utilisateur. Sinon relancez l'installation et choisissez de créer un autre utilisateur.
