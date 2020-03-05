@@ -31,7 +31,15 @@ if [ -f /usr/share/debconf/confmodule ]; then
     db_input high geonature-db/POSTGRES_USER || true
     db_input high geonature-db/POSTGRES_PASSWORD || true
     db_input high geonature-db/POSTGRES_DB || true
+    db_input high geonature-db/POSTGRES_LOCALE || true
+    db_input high geonature-db/NOMENCLATURE_LANGUAGE || true
+    db_input high geonature-db/LOCAL_SRID || true
     db_input high geonature-db/ADD_USERSHUB_SAMPLE_DATA || true
+    db_input high geonature-db/REFGEO_MUNICIPALITY || true
+    db_input high geonature-db/REFGEO_GRID || true
+    db_input high geonature-db/REFGEO_DEM || true
+    db_input high geonature-db/REFGEO_VECTORISE_DEM || true
+    db_input high geonature-db/SAMPLE_DATA || true
     db_go
 fi
 
@@ -43,8 +51,24 @@ db_get geonature-db/POSTGRES_PASSWORD
 export POSTGRES_PASSWORD="$RET"
 db_get geonature-db/POSTGRES_DB
 export POSTGRES_DB="$RET"
+db_get geonature-db/POSTGRES_LOCALE
+export POSTGRES_LOCALE="$RET"
+db_get geonature-db/NOMENCLATURE_LANGUAGE
+export NOMENCLATURE_LANGUAGE="$RET"
+db_get geonature-db/LOCAL_SRID
+export LOCAL_SRID="$RET"
 db_get geonature-db/ADD_USERSHUB_SAMPLE_DATA
 export ADD_USERSHUB_SAMPLE_DATA="$RET"
+db_get geonature-db/REFGEO_MUNICIPALITY
+export REFGEO_MUNICIPALITY="$RET"
+db_get geonature-db/REFGEO_GRID
+export REFGEO_GRID="$RET"
+db_get geonature-db/REFGEO_DEM
+export REFGEO_DEM="$RET"
+db_get geonature-db/REFGEO_VECTORISE_DEM
+export REFGEO_VECTORISE_DEM="$RET"
+db_get geonature-db/SAMPLE_DATA
+export SAMPLE_DATA="$RET"
 
 # Generate config files
 echo "Generate configuration" >&2
@@ -65,15 +89,16 @@ configure)
         db_go
         db_get geonature-db/CONTINUER
         if [[ "$RET" = "false" ]]; then
-            echo "L'utilisateur existe. Vous avez choisi d'interrompre l'installation de la base de données"
-            exit 0
+            echo "L'utilisateur existe. Vous avez choisi d'interrompre l'installation de la base de données."
+            exit 1
         fi
     fi
 
     if ! database_exists ${POSTGRES_DB}; then
         create_database
     else
-        echo "La base de données existe. Elle ne sera pas supprimée."
+        echo "La base de données ${POSTGRES_DB} existe. Elle ne sera pas supprimée."
+        exit 1
     fi
 
     ;;

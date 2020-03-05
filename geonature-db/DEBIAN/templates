@@ -24,12 +24,55 @@ Type: string
 Default: geonature2db
 Description: Nom de la base de données geonature
 
+Template: geonature-db/POSTGRES_LOCALE
+Type: string
+Default: fr_FR.UTF-8
+Description: Locale de la base de données geonature
+
+Template: geonature-db/NOMENCLATURE_LANGUAGE
+Type: string
+Default: fr
+Description: Langue des nomenclatures (fr=default, autre : en, it, ...)
+
+Template: geonature-db/LOCAL_SRID
+Type: string
+Default: 2154
+Description: SRID local pour initialiser la projection des champs geom de la base (2154=default)
+
 Template: geonature-db/ADD_USERSHUB_SAMPLE_DATA
 Type: boolean
 Default: true
-Description: Souhaitez vous installer les utilisateurs exemples.
+Description: Souhaitez vous installer les utilisateurs exemples ?
  Choisir yes si vous souhaitez disposer d'utlisateur exemple tel que l'utilisateur "admin" avec le mot de passe "admin".
  Choisir no si vous ne souhaitez avoir aucun utilisateur. Attention, vous devrez ajouter au moins un utilisateur manuellement dans la base pour pouvoir vous authentifier dans les applications qui le nécessitent.
+
+Template: geonature-db/REFGEO_MUNICIPALITY
+Type: boolean
+Default: true
+Description: Souhaitez vous installer les communes de métroples (recommandé) ?
+ Choisir yes si vous souhaitez disposer de la couche des communes.
+ Choisir no si vous êtes sur un territoire hors France. Si vous êtes en outre-mer, il est préférable d'installer les communes de métropoles puis de les remplacer par les communes de votre territoire après l'installation de la base.
+
+Template: geonature-db/REFGEO_GRID
+Type: boolean
+Default: true
+Description: Souhaitez vous installer les mailles INPN de 1*1 km, 5*5 km et 10*10km (recommandé) ?
+
+Template: geonature-db/REFGEO_DEM
+Type: boolean
+Default: true
+Description: Souhaitez vous installer le MNT France entière (250m) ?
+
+Template: geonature-db/REFGEO_VECTORISE_DEM
+Type: boolean
+Default: true
+Description: Souhaitez vous vectoriser le MNT ?
+ Vectoriser le MNT permet d'améliorer les performances de calcul des altitudes. Cette opération est assez longue.
+
+Template: geonature-db/SAMPLE_DATA
+Type: boolean
+Default: true
+Description: Souhaitez vous installer des données examples dans la base ?
 
 Template: geonature-db/CONTINUER
 Type: boolean
