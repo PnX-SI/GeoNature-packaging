@@ -137,3 +137,6 @@ dmypy.json
 # Local settings
 .vscode/
 settings.ini
+
+# dockerhub
+dockerhub/debian*

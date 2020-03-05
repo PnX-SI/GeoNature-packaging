@@ -20,7 +20,7 @@ do
 
     # create dir
     dir_name=debian-${version}
-    rm -R ${dir_name}
+    rm -Rf ${dir_name}
     mkdir ${dir_name}
     
     # create Dockerfile (replace DEBIAN_VERSION with $version)
