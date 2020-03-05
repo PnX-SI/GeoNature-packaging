@@ -1,3 +1,5 @@
+set -e
+
 # docker hub configuration
 organisation=geonature
 depot=debian
@@ -8,7 +10,7 @@ depot=debian
 versions="buster stretch"
 
 # docker login
-# docker login
+docker login
 
 # process each version
 for version in ${versions}
@@ -32,7 +34,7 @@ do
     docker build -t ${docker_name} .
 
     # push docker
-    docker push ${docker_name} .
+    echo docker push ${docker_name}
 
     cd ..
 done
