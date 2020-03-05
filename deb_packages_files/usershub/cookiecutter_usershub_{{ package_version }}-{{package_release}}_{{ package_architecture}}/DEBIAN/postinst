@@ -30,7 +30,8 @@ function generate_config() {
 
     CONF_DIR=/etc/geonature
     for f in "usershub.conf"; do
-        envsubst <$CONF_DIR/$f.init >$CONF_DIR/$f
+        envsubst <$CONF_DIR/$f >/tmp/$f
+        mv /tmp/$f $CONF_DIR/$f
     done
 }
 
