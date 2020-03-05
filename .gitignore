@@ -140,3 +140,4 @@ settings.ini
 
 # dockerhub
 dockerhub/debian*
+dockerhub/ubuntu*
