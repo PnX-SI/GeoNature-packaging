@@ -1,5 +1,5 @@
 .\"                                      Hey, EMACS: -*- nroff -*-
-.\" (C) Copyright 2020 pnc-si <geonature@ecrins-parcnational.fr>,
+.\" (C) Copyright 2020 pnx-si <geonature@ecrins-parcnational.fr>,
 .\"
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
