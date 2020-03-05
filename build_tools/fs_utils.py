@@ -47,7 +47,7 @@ def create_deb_fs_tree(template, output_dir, version, release, architecture):
     # Use cookiecutter to turn the template into a real directory tree
     template = Path(template)
     unziped_package = Path(
-        generate_files(
+        generate_files(  # fonction de cookiecutter non documentée (cf code)
             repo_dir=str(template),
             context={
                 "package_version": version,
@@ -82,7 +82,7 @@ def recursive_md5(directory):
         The DEBIAN directory is ignored.
     """
     for path in Path(directory).rglob("*"):
-        if path.is_file() and "DEBIAN" not in str(path):
+        if path.is_file():
             checksum = md5(path.read_bytes()).hexdigest()
             path = str(path).replace(str(directory).rstrip("/") + "/", "")
             yield path, checksum
@@ -100,9 +100,9 @@ def package_deb_tree(directory):
 
 def move_package_to_build_dir(deb_package, build_dir):
 
-    sh.mkdir("-p", dest_dir)
+    sh.mkdir("-p", build_dir)
     sh.cp("-r", deb_package, build_dir)
     print(
-        'Deb package is available at "%s"' % (Path(dest_dir) / Path(deb_package).name)
+        'Deb package is available at "%s"' % (Path(build_dir) / Path(deb_package).name)
     )
 

@@ -2,7 +2,7 @@
 
 import click  # See doc: https://click.palletsprojects.com
 
-from build_tools.build_usershub import build_usershub_db_deb
+from build_tools.build_geonaturedb import build_geonaturedb_deb
 from build_tools.fs_utils import ROOT_DIR
 
 
@@ -103,7 +103,7 @@ def build(
     """
 
     if project == "geonaturedb":
-        build_usershub_db_deb(
+        build_geonaturedb_deb(
             version,
             release,
             keep_temp_dir,
