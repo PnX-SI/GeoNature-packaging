@@ -56,9 +56,9 @@ def build_usershub_deb(
         # Populate it
         copy_files(
             {
-                repo_dir / "app": deb_tree_path / "app",
-                repo_dir / "server.py": deb_tree_path,
-                repo_dir / "requirements.txt": deb_tree_path,
+                repo_dir / "app": deb_tree_path / "usr/share/usershub/app",
+                repo_dir / "server.py": deb_tree_path / "usr/share/usershub",
+                repo_dir / "requirements.txt": deb_tree_path / "usr/share/usershub",
             }
         )
         # Zip the package and copy it

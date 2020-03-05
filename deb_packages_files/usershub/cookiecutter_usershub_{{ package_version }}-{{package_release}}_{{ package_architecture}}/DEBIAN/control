@@ -8,7 +8,7 @@ Homepage: https://github.com/PnX-SI/UsersHub/
 #Vcs-Git: https://anonscm.debian.org/git/collab-maint/usershub-app.git
 #Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/geonature-db.git
 Package: usershub
-Version: 0.0.1
+Version: 0.0.3
 Architecture: all
 Depends: python3 (>=3.5), libpq-dev, python3-venv, supervisor
 Description: GeoNature database installation
