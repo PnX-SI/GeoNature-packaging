@@ -1,5 +1,9 @@
 dpkg-deb --build $1
+
+# Purge
+sudo dpkg --force-all --purge $1
 sudo apt purge -y $1
 sudo echo PURGE | sudo debconf-communicate $1
 
+# Install
 sudo apt install ./$1.deb

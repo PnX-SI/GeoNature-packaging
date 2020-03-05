@@ -1,0 +1,17 @@
+
+. /usr/share/debconf/confmodule
+
+if [ -f /usr/share/debconf/confmodule ]; then
+    db_version 2.0
+    db_input high usershub/URL_APPLICATION || true
+    db_input high usershub/PASS_METHOD || true
+    db_input high usershub/FILL_MD5_PASS || true
+    db_input low usershub/COOKIE_EXPIRATION || true
+    db_input low usershub/ACTIVATE_API || true
+    db_input low usershub/ACTIVATE_APP || true
+    db_input high usershub/SECRET_KEY || true
+    for p in GUN_NUM_WORKERS GUN_HOST GUN_PORT; do
+        db_input high usershub/${p} || true
+    done
+    db_go
+fi

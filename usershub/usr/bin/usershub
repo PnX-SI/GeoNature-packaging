@@ -1,15 +1,8 @@
 #!/bin/bash
 
-FLASKDIR=$(readlink -e "${0%/*}")
-
-app_name=usershub2
-echo "Starting $app_name"
-echo "$FLASKDIR"
-
 # activate the virtualenv
-cd $FLASKDIR/$venv_dir
-source bin/activate
+source /usr/share/usershub/venv/bin/activate
 
-export PYTHONPATH=$FLASKDIR:$PYTHONPATH
+export PYTHONPATH=/usr/share/usershub:$PYTHONPATH
 # Start your unicorn
 exec gunicorn server:app --access-logfile /var/log/usershub/access_uhv2.log --config /etc/geonature/gunicorn-usershub.conf.py

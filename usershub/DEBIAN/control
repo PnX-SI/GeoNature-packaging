@@ -10,7 +10,7 @@ Homepage: https://github.com/PnX-SI/UsersHub/
 Package: usershub
 Version: 0.0.1
 Architecture: all
-Depends: python3 (>=3.5), libpq-dev, virtualenv,  supervisor
+Depends: python3 (>=3.5), libpq-dev, python3-venv, supervisor
 Description: GeoNature database installation
  This package install the UsersHub application
  .
