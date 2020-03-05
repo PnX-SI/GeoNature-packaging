@@ -41,7 +41,7 @@ function database_exists () {
         return 0
     else
         # Grep db name in the list of database
-        sudo -n -u postgres -s -- psql -tAl | grep -q "^$1|"
+        su postgres -c "psql -tAl | grep -q \"^$1|\""
         return $?
     fi
 }
@@ -75,7 +75,7 @@ function create_database () {
     # Mise en place de la structure de la base et des données permettant son fonctionnement avec l'application
     echo "GRANT..."
     cp $SCRIPT_PATH/grant.sql /tmp/geonature/grant.sql
-    sudo sed -i "s/MYPGUSER/$POSTGRES_USER/g" /tmp/geonature/grant.sql
+    sed -i "s/MYPGUSER/$POSTGRES_USER/g" /tmp/geonature/grant.sql
     write_log 'GRANT'
     su postgres -c "psql -d $POSTGRES_DB -f /tmp/geonature/grant.sql" &>> $LOG_PATH/install_db.log
     
@@ -152,14 +152,14 @@ function create_database () {
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/nomenclatures/nomenclatures.sql  &>> $LOG_PATH/install_db.log
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/nomenclatures/nomenclatures_taxonomie.sql  &>> $LOG_PATH/install_db.log
     write_log "Inserting 'nomenclatures' data..."
-    sudo sed -i "s/MYDEFAULTLANGUAGE/$NOMENCLATURE_LANGUAGE/g" /tmp/nomenclatures/data_nomenclatures.sql
+    sed -i "s/MYDEFAULTLANGUAGE/$NOMENCLATURE_LANGUAGE/g" /tmp/nomenclatures/data_nomenclatures.sql
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/nomenclatures/data_nomenclatures.sql  &>> $LOG_PATH/install_db.log
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/nomenclatures/data_nomenclatures_taxonomie.sql  &>> $LOG_PATH/install_db.log
 
     # Commons schema
     write_log "Creating 'commons' schema..."
     cp $SCRIPT_PATH/core/commons.sql /tmp/geonature/commons.sql
-    sudo sed -i "s/MYLOCALSRID/$LOCAL_SRID/g" /tmp/geonature/commons.sql
+    sed -i "s/MYLOCALSRID/$LOCAL_SRID/g" /tmp/geonature/commons.sql
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/geonature/commons.sql  &>> $LOG_PATH/install_db.log
     
     # Meta schema
@@ -169,7 +169,7 @@ function create_database () {
     # Ref_geo schema
     write_log "Creating 'ref_geo' schema..."
     cp $SCRIPT_PATH/core/ref_geo.sql /tmp/geonature/ref_geo.sql
-    sudo sed -i "s/MYLOCALSRID/$LOCAL_SRID/g" /tmp/geonature/ref_geo.sql
+    sed -i "s/MYLOCALSRID/$LOCAL_SRID/g" /tmp/geonature/ref_geo.sql
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/geonature/ref_geo.sql  &>> $LOG_PATH/install_db.log
     if [ $REFGEO_MUNICIPALITY = "true" ];
     then
@@ -200,11 +200,11 @@ function create_database () {
         fi
         unzip -o /tmp/geonature/inpn_grids.zip -d /tmp/geonature
         write_log "Insert grid layers... (This may take a few minutes)"
-        sudo -n -u postgres -s psql -d $POSTGRES_DB -f /tmp/geonature/inpn_grids.sql &>> $LOG_PATH/install_db.log
+        su postgres -c "psql -d $POSTGRES_DB -f /tmp/geonature/inpn_grids.sql" &>> $LOG_PATH/install_db.log
         write_log "Restore $POSTGRES_USER owner"
-        sudo -n -u postgres -s psql -d $POSTGRES_DB -c "ALTER TABLE ref_geo.temp_grids_1 OWNER TO $POSTGRES_USER;" &>> $LOG_PATH/install_db.log
-        sudo -n -u postgres -s psql -d $POSTGRES_DB -c "ALTER TABLE ref_geo.temp_grids_5 OWNER TO $POSTGRES_USER;" &>> $LOG_PATH/install_db.log
-        sudo -n -u postgres -s psql -d $POSTGRES_DB -c "ALTER TABLE ref_geo.temp_grids_10 OWNER TO $POSTGRES_USER;" &>> $LOG_PATH/install_db.log
+        su postgres -c "psql -d $POSTGRES_DB -c \"ALTER TABLE ref_geo.temp_grids_1 OWNER TO $POSTGRES_USER;\"" &>> $LOG_PATH/install_db.log
+        su postgres -c "psql -d $POSTGRES_DB -c \"ALTER TABLE ref_geo.temp_grids_5 OWNER TO $POSTGRES_USER;\"" &>> $LOG_PATH/install_db.log
+        su postgres -c "psql -d $POSTGRES_DB -c \"ALTER TABLE ref_geo.temp_grids_10 OWNER TO $POSTGRES_USER;\"" &>> $LOG_PATH/install_db.log
         write_log "Insert data in l_areas and li_grids tables"
         export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/ref_geo_grids.sql  &>> $LOG_PATH/install_db.log
     fi
@@ -238,7 +238,7 @@ function create_database () {
     # Synthese schema
     write_log "Creating 'synthese' schema..."
     cp $SCRIPT_PATH/core/synthese.sql /tmp/geonature/synthese.sql
-    sudo sed -i "s/MYLOCALSRID/$LOCAL_SRID/g" /tmp/geonature/synthese.sql
+    sed -i "s/MYLOCALSRID/$LOCAL_SRID/g" /tmp/geonature/synthese.sql
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /tmp/geonature/synthese.sql  &>> $LOG_PATH/install_db.log
     export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/core/synthese_default_values.sql  &>> $LOG_PATH/install_db.log
     write_log "Creating commons view depending of synthese"
@@ -285,5 +285,5 @@ function create_database () {
 
 function drop_database () {
     echo "Suppression de la base..."
-    sudo -n -u postgres -s dropdb $POSTGRES_DB
+    su postgres -c "dropdb $POSTGRES_DB"
 }
