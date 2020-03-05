@@ -4,7 +4,7 @@
 # see: dh_installdeb(1)
 
 set -e
-set -o xtrace
+# set -o xtrace
 
 # summary of how this script can be called:
 #        * <postinst> `configure' <most-recently-configured-version>
@@ -17,68 +17,65 @@ set -o xtrace
 #          <conflicting-package> <version>
 # for details, see https://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
+function get_var () {
+    db_get geonature-db/POSTGRES_PORT
+    export POSTGRES_PORT="$RET"
+    db_get geonature-db/POSTGRES_USER
+    export POSTGRES_USER="$RET"
+    db_get geonature-db/POSTGRES_PASSWORD
+    export POSTGRES_PASSWORD="$RET"
+    export POSTGRES_HOST="localhost"
+    db_get geonature-db/POSTGRES_DB
+    export POSTGRES_DB="$RET"
+    db_get geonature-db/POSTGRES_LOCALE
+    export POSTGRES_LOCALE="$RET"
+    db_get geonature-db/NOMENCLATURE_LANGUAGE
+    export NOMENCLATURE_LANGUAGE="$RET"
+    db_get geonature-db/LOCAL_SRID
+    export LOCAL_SRID="$RET"
+    db_get geonature-db/ADD_USERSHUB_SAMPLE_DATA
+    export ADD_USERSHUB_SAMPLE_DATA="$RET"
+    db_get geonature-db/REFGEO_MUNICIPALITY
+    export REFGEO_MUNICIPALITY="$RET"
+    db_get geonature-db/REFGEO_GRID
+    export REFGEO_GRID="$RET"
+    db_get geonature-db/REFGEO_DEM
+    export REFGEO_DEM="$RET"
+    db_get geonature-db/REFGEO_VECTORISE_DEM
+    export REFGEO_VECTORISE_DEM="$RET"
+    db_get geonature-db/SAMPLE_DATA
+    export SAMPLE_DATA="$RET"
+}
+function generate_config () {
+    # Generate config files
+    get_var
+    echo "Generate configuration" >&2
+    CONF_DIR=/etc/geonature
+    for f in "geonature-db.conf"; do
+        envsubst <$CONF_DIR/$f.init >$CONF_DIR/$f
+    done
+}
 
 . /usr/share/debconf/confmodule
 . /usr/share/geonature/geonature-db/install_db_functions.sh
 
+# Environnement settings
 export SCRIPT_PATH=/usr/share/geonature/geonature-db/sql
 export LOG_PATH=/var/log/geonature/geonature-db
-export POSTGRES_HOST="localhost"
 
+# PG settings
 if [ -f /usr/share/debconf/confmodule ]; then
     db_version 2.0
     db_input high geonature-db/POSTGRES_PORT || true
     db_input high geonature-db/POSTGRES_USER || true
     db_input high geonature-db/POSTGRES_PASSWORD || true
-    db_input high geonature-db/POSTGRES_DB || true
-    db_input high geonature-db/POSTGRES_LOCALE || true
-    db_input high geonature-db/NOMENCLATURE_LANGUAGE || true
-    db_input high geonature-db/LOCAL_SRID || true
-    db_input high geonature-db/ADD_USERSHUB_SAMPLE_DATA || true
-    db_input high geonature-db/REFGEO_MUNICIPALITY || true
-    db_input high geonature-db/REFGEO_GRID || true
-    db_input high geonature-db/REFGEO_DEM || true
-    db_input high geonature-db/REFGEO_VECTORISE_DEM || true
-    db_input high geonature-db/SAMPLE_DATA || true
     db_go
 fi
-
-db_get geonature-db/POSTGRES_PORT
-export POSTGRES_PORT="$RET"
-db_get geonature-db/POSTGRES_USER
-export POSTGRES_USER="$RET"
-db_get geonature-db/POSTGRES_PASSWORD
-export POSTGRES_PASSWORD="$RET"
-db_get geonature-db/POSTGRES_DB
-export POSTGRES_DB="$RET"
-db_get geonature-db/POSTGRES_LOCALE
-export POSTGRES_LOCALE="$RET"
-db_get geonature-db/NOMENCLATURE_LANGUAGE
-export NOMENCLATURE_LANGUAGE="$RET"
-db_get geonature-db/LOCAL_SRID
-export LOCAL_SRID="$RET"
-db_get geonature-db/ADD_USERSHUB_SAMPLE_DATA
-export ADD_USERSHUB_SAMPLE_DATA="$RET"
-db_get geonature-db/REFGEO_MUNICIPALITY
-export REFGEO_MUNICIPALITY="$RET"
-db_get geonature-db/REFGEO_GRID
-export REFGEO_GRID="$RET"
-db_get geonature-db/REFGEO_DEM
-export REFGEO_DEM="$RET"
-db_get geonature-db/REFGEO_VECTORISE_DEM
-export REFGEO_VECTORISE_DEM="$RET"
-db_get geonature-db/SAMPLE_DATA
-export SAMPLE_DATA="$RET"
-
-# Generate config files
-echo "Generate configuration" >&2
-CONF_DIR=/etc/geonature
-for f in "geonature-db.conf"; do
-    envsubst <$CONF_DIR/$f.init >$CONF_DIR/$f
-done
+get_var
 
 case "$1" in
 configure)
+    # Manage pg user
     set +e
     create_role
     ret=$?
@@ -89,20 +86,61 @@ configure)
         db_go
         db_get geonature-db/CONTINUER
         if [[ "$RET" = "false" ]]; then
-            echo "L'utilisateur existe. Vous avez choisi d'interrompre l'installation de la base de données."
+            echo "L'utilisateur choisi existait. Vous avez choisi d'interrompre l'installation de la base de données."
             exit 1
         fi
     fi
 
+    # Manage database
+    if [ -f /usr/share/debconf/confmodule ]; then
+        db_version 2.0
+        db_input high geonature-db/POSTGRES_DB || true
+        db_input high geonature-db/POSTGRES_LOCALE || true
+        db_go
+    fi
+    get_var
+
+    # Test if database exist
     if ! database_exists ${POSTGRES_DB}; then
+        # Database doesn't exit --> create it
+        if [ -f /usr/share/debconf/confmodule ]; then
+            db_version 2.0
+            db_input high geonature-db/NOMENCLATURE_LANGUAGE || true
+            db_input high geonature-db/LOCAL_SRID || true
+            db_input high geonature-db/ADD_USERSHUB_SAMPLE_DATA || true
+            db_input high geonature-db/REFGEO_MUNICIPALITY || true
+            db_input high geonature-db/REFGEO_GRID || true
+            db_input high geonature-db/REFGEO_DEM || true
+            db_input high geonature-db/REFGEO_VECTORISE_DEM || true
+            db_input high geonature-db/SAMPLE_DATA || true
+            db_go
+        fi
+        get_var
         create_database
-        # ret=$?
-        # if [[ ret -ne 0 ]]; then
-        #     echo "fuck"
-        # fi
+        generate_config
     else
-        echo "La base de données ${POSTGRES_DB} existe. Elle ne sera pas supprimée."
-        exit 1
+        # Database existe
+        set +e
+        # Try to read geonature version
+        RESULT=(`export PGPASSWORD=$POSTGRES_PASSWORD;psql -t -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -c "SELECT soft_installed_version FROM gn_commons.t_soft_versions WHERE soft_code = 'GN';"`)
+        if [[ -z ${RESULT[0]}  ]]
+            then
+            # Nothing to read or connexion failure
+            echo "La base de données existe mais les paramètres de connexion ne sont pas valides."
+            echo "Le script d'installation de la base ne peut pas poursuivre. La base de données existante a été conservée."
+            echo "Pour que le script d'installation fonctionne, vous devez fournir un autre nom pour la base de données GeoNature ainsi que des paramètres de connexion valides."
+            exit 1
+        else
+            # Connexion is ok ! Version number is available
+            echo "La base de données ${POSTGRES_DB} existe et ne sera pas supprimée. Sa version 'GeoNature' est ${RESULT[0]}."
+            generate_config
+            echo "Les paramètres de connexion à la base de données '${POSTGRES_DB}' ont été enregistrés dans '/etc/geonature/geonature-db.conf."
+            echo "Ils seront utilisables par les applications GeoNature, UsersHub, TaxHub."
+            echo "Assurez vous que ces applications sont compatibles avec la version de la base de données."
+            exit 0       
+        fi
+        set -e       
+        exit 0
     fi
 
     ;;

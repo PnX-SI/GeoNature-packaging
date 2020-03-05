@@ -51,7 +51,7 @@ Type: boolean
 Default: true
 Description: Souhaitez vous installer les communes de métroples (recommandé) ?
  Choisir yes si vous souhaitez disposer de la couche des communes.
- Choisir no si vous êtes sur un territoire hors France. Si vous êtes en outre-mer, il est préférable d'installer les communes de métropoles puis de les remplacer par les communes de votre territoire après l'installation de la base.
+ Choisir no si vous êtes sur un territoire hors France ou outre-mer. Vous pourrez peupler la tables avec les communes de votre territoire après l'installation de la base.
 
 Template: geonature-db/REFGEO_GRID
 Type: boolean
@@ -79,3 +79,9 @@ Type: boolean
 Default: true
 Description: Souhaiter vous continuer l'installation ?
  L'utilisateur que vous avez choisi existe déjà. Il n'a pas été recréé et son mot de passe n'a pas été changé. Le mot de passe n'est donc pas forcement celui que vous avez indiqué. Assurez vous de bien connaitre le mot de passe de cet utilisateur. Sinon relancez l'installation et choisissez de créer un autre utilisateur.
+
+Template: geonature-db/USE_EXISTING_DB
+Type: boolean
+Default: true
+Description: Souhaiter vous conserver ces paramètres pour les applications ?
+ Les paramètres de connexion à la base de données que vous avez renseignés sont fonctionnels. Ils pourront être utilisés par des applications telles que UsersHub, TaxHub, GeoNature, etc...
