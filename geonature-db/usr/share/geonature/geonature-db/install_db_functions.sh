@@ -102,10 +102,10 @@ function create_database () {
     if [[ $ADD_USERSHUB_SAMPLE_DATA = "true" ]]
     then
         write_log "Insertion of data for usershub..."
-        # fisrt insert taxhub data for usershub
-        export PGPASSWORD=$POSTGRES_PASSWORD;psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/utilisateurs/adds_for_usershub.sql &>> $LOG_PATH/install_db.log
         # insert geonature data for usershub
         export PGPASSWORD=$POSTGRES_PASSWORD;psql -v ON_ERROR_STOP=1 -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/utilisateurs/usershub-dataset.sql &>> $LOG_PATH/install_db.log
+        # fisrt insert taxhub data for usershub
+        export PGPASSWORD=$POSTGRES_PASSWORD;psql -v ON_ERROR_STOP=1 -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f $SCRIPT_PATH/utilisateurs/adds_for_usershub.sql &>> $LOG_PATH/install_db.log
     fi
 
     # Taxonomie schema
