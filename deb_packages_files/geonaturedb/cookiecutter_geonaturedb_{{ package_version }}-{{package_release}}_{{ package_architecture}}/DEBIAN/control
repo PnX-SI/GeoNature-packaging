@@ -1,0 +1,17 @@
+Source: geonature-db
+Section: unknown
+Priority: optional
+Maintainer: PnX-SI Team <geonature@ecrins-parcnational.fr>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.1.2
+Homepage: https://github.com/PnX-SI/GeoNature
+#Vcs-Git: https://anonscm.debian.org/git/collab-maint/geonature-db.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/geonature-db.git
+Package: geonature-db
+Version: 0.0.1
+Architecture: all
+Depends: postgresql (>=9.5), postgis, debconf (>= 0.5) | debconf-2.0, sensible-utils, dbconfig-pgsql | dbconfig-no-thanks | dbconfig-common (<< 2.0.0)
+Description: GeoNature database installation
+ This package install the PostgreSQL GeoNature database.
+ .
+ Blablabla about geonaturedb.

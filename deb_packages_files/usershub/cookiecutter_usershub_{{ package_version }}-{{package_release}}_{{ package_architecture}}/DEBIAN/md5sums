@@ -1,1 +1,0 @@
-{% for path, checksum in checksums %}{{checksum}}  {{path}}{% endfor %}

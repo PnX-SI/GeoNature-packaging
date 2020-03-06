@@ -4,7 +4,7 @@
 # see: dh_installdeb(1)
 
 set -e
-set -o xtrace
+# set -o xtrace
 
 # summary of how this script can be called:
 #        * <postinst> `configure' <most-recently-configured-version>
@@ -23,14 +23,33 @@ set -o xtrace
 # Generate config files
 function generate_config() {
     echo "Generate configuration" >&2
-    for p in URL_APPLICATION PASS_METHOD FILL_MD5_PASS COOKIE_EXPIRATION ACTIVATE_API ACTIVATE_APP SECRET_KEY; do
+
+    . /usr/share/debconf/confmodule
+
+    if [ -f /usr/share/debconf/confmodule ]; then
+        db_version 2.0
+        db_input high usershub/URL_APPLICATION || true
+        db_input low usershub/PASS_METHOD || true
+        db_input low usershub/FILL_MD5_PASS || true
+        db_input low usershub/COOKIE_EXPIRATION || true
+        db_input low usershub/ACTIVATE_API || true
+        db_input low usershub/ACTIVATE_APP || true
+        db_go
+    fi
+
+    for p in URL_APPLICATION PASS_METHOD FILL_MD5_PASS COOKIE_EXPIRATION ACTIVATE_API ACTIVATE_APP; do
         db_get usershub/${p}
         export ${p}="$RET"
     done
 
+    SECRET_KEY="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1)"
+    export SECRET_KEY
+
     CONF_DIR=/etc/geonature
+    CONF_DIR=/tmp
     for f in "usershub.conf"; do
-        envsubst <$CONF_DIR/$f.init >$CONF_DIR/$f
+        envsubst <$CONF_DIR/$f.in >/tmp/$f
+        mv /tmp/$f /etc/geonature/$f
     done
 }
 
@@ -58,7 +77,18 @@ function reload_supervisor() {
 
 case "$1" in
 configure)
-    generate_config
+    # Test if config file already exists
+    #   Si fichier de configuration existe
+    #       alors on ne regénère pas la configuration
+    db_get usershub/CONF_EXISTS
+    export CONF_EXISTS="$RET"
+    if [[ $CONF_EXISTS = 'true' ]]; then
+        echo "config file already exists" >&2
+    else
+        generate_config
+        db_set usershub/CONF_EXISTS true
+    fi
+
     setup_venv
     reload_supervisor
     echo "configure done"
