@@ -1,3 +1,4 @@
+# Build artifacts
 *.deb
 
 # Byte-compiled / optimized / DLL files
@@ -20,6 +21,7 @@ lib/
 lib64/
 parts/
 sdist/
+var/
 wheels/
 pip-wheel-metadata/
 share/python-wheels/
@@ -137,6 +139,3 @@ dmypy.json
 
 # IDE
 .vscode/
-
-# Local config
-settings.ini
