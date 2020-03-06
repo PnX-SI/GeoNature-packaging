@@ -139,3 +139,6 @@ dmypy.json
 
 # IDE
 .vscode/
+
+# Local settings
+settings.ini
