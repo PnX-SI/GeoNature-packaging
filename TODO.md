@@ -19,10 +19,12 @@
     - Reorganiser configuration
     - Faire fichiers DEBIAN
     - Ajouter process de build dans manage.py et build_tools
+    - Tester médias dans /var/www/...
 
 ## Deb UsersHub
 
     - Tester si fichier configuration connexion à la BD existe
+    - Configuration apache
 
 ## Deb GeoNature DB:
 
@@ -31,7 +33,7 @@
     - Mise à jour des dépots github principaux pour répercuter les modifications
 
 
-## Deb GeoNnature:
+## Deb GeoNature:
 
     - Reorganiser configuration
     - Faire fichiers DEBIANS
