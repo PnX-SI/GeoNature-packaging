@@ -18,5 +18,3 @@ ACTIVATE_APP = ${ACTIVATE_APP}
 # SERVER
 PORT = 5001
 DEBUG = false
-
-TEST="J'ai été mis à jour"

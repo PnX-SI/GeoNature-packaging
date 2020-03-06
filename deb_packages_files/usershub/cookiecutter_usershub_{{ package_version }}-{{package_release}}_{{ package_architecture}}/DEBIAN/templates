@@ -34,3 +34,8 @@ Template: usershub/ACTIVATE_APP
 Type: boolean
 Default: true
 Description: Activation de l'application
+
+Template: usershub/CONF_EXISTS
+Type: boolean
+Default: false
+Description: Est-ce que le fichier de conf exist avant l'installation?
