@@ -5,7 +5,7 @@ import re
 import shlex
 
 
-from pathlib2 import Path
+from pathlib import Path
 
 
 def command_exists(command):

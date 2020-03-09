@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-import click  # See doc: https://click.palletsprojects.com
+from pathlib import Path
+
+import click
 
 from build_tools.build_geonaturedb import build_geonaturedb_deb
 from build_tools.build_usershub import build_usershub_deb

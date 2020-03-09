@@ -4,7 +4,7 @@ import uuid
 
 import sh
 
-from pathlib2 import Path
+from pathlib import Path
 
 
 from build_tools.fs_utils import (

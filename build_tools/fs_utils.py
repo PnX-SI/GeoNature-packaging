@@ -7,7 +7,7 @@ from hashlib import md5
 
 import sh
 from cookiecutter.generate import generate_files
-from pathlib2 import Path
+from pathlib import Path
 
 ROOT_DIR = Path(__file__).absolute().parent.parent
 
