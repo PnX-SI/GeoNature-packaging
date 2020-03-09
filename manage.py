@@ -2,17 +2,20 @@
 
 from pathlib import Path
 
+import os
+import sh
 import click
+import configparser
+
+import pytest
 
 from build_tools.build_geonaturedb import build_geonaturedb_deb
 from build_tools.build_usershub import build_usershub_deb
-from build_tools.fs_utils import ROOT_DIR
-
+from build_tools.fs_utils import ROOT_DIR, in_dir
 
 @click.group()
 def cli():
     pass
-
 
 @cli.command()
 @click.option(
@@ -133,6 +136,43 @@ def build(
             usershub_checkout,
         )
 
+@cli.command()
+@click.option(
+    "--settings",
+    type=Path,
+    default=ROOT_DIR / "settings.ini",
+    help="A settings file to configure the tests with",
+)
+@click.argument(
+    "path",
+    metavar="TESTS_PATH",
+    type=Path,
+    default=ROOT_DIR / "integration_tests",
+)
+def run_tests(
+    path,
+    settings,
+):
+    """ Load the configuration and run the tests
+
+        This is the equivalent of settings all the
+        env variables manually, activate the venv,
+        then at the root of the project do:
+
+        pytest integration_tests
+
+        Do so if you need more flexibility such as passing
+        options to pytest itself.
+
+    """
+    # Execute the tests, respecting the config file
+    with settings.open(encoding="utf8") as f:
+        config = configparser.ConfigParser()
+        config.optionxform = str # don't lowercase keys
+        config.read_string('[main]\n'+ f.read())
+        os.environ = {**config['main'], **os.environ}
+        with in_dir(ROOT_DIR):
+            pytest.main([str(path)])
 
 if __name__ == "__main__":
     cli()

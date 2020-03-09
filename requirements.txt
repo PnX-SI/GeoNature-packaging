@@ -4,3 +4,4 @@ pathlib2==2.3.5
 sh==1.12.14
 pytest
 bs4
+sh==1.12.14

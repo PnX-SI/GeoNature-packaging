@@ -53,11 +53,12 @@ export PYTHON_EXE=${GEONATURE_CI_PYTHON:-$most_recent_python}
 ###############################
 
 # If we are in a venv, make sure it's suitable, and use it
-venv=$(python -c 'import sys; print(getattr(sys, "real_prefix", ""))')
+prefix=$(python -c 'import sys; print(getattr(sys, "real_prefix", ""))')
+venv=${VIRTUAL_ENV:-prefix}
 if [[ $venv ]]; then
-    echo "Currently in a venv '${VENV}', using that instead of creating one."
+    echo "Currently in a venv '${venv}', using that instead of creating one."
     python_version=$(python -V 2>&1 | cut -d\  -f 2) # python 2 prints version to stderr
-    if dpkg --compare-versions "$python_version" "<=" "$3.6"; then
+    if dpkg --compare-versions "$python_version" "<=" "3.6"; then
         echo "This virtualenv uses Python ${python_version}, but integration testing requires 3.6+. Create a new virtualenv or let the script create one for you." 1>&2
         exit 1
     fi

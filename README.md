@@ -1,28 +1,25 @@
-# Repository to hold the code for packaging geoanture, taxhub and usershub
+# Repository to hold the code for packaging geonature, taxhub and usershub
 
 ## Running integration tests
 
-There is a list of configuration settings you can set in settings.ini.sample. Either set them as env variables, or create a settings.ini that will automatically be loaded by "integrations_test.sh".
+There is a list of configuration settings you can set in settings.ini.sample. Either set them as env variables, or create a settings.ini file from settings.ini.sample: they will automatically be loaded by the tests.
 
-Setup the environnement for testing:
-
-```bash
-./integration_tests.sh setup
-```
-
-This will install all dependancies.
-
-Run all the tests:
+Setup the environnement:
 
 ```bash
-./integration_tests.sh run_all
+./setup_environ.sh
 ```
 
-The tests use pytest, and if you need more control, you can run the tests manually. Run:
+It will use a currently activated virtualenv or create one if needed, then install all dependancies.
 
-```bash
-./integration_tests.sh manual_run
-```
+Then run:
 
-For instructinos.
+./manage.py --help
+
+To get a list of available commands and:
+
+./manage.py <command> --help
+
+For what each commands do.
+
 
