@@ -1,37 +1,39 @@
 
-Intégration continue:
+# Intégration continue:
 
     - Tests d'intégrations dans Azur Pipelines
     - Installation des debs dans azur pipeline
     - Trigger github qui va declencher le job azur pipeline
-    
-   
-Mettre en place server apt:
+
+# Packaging
+
+## Mettre en place server apt:
 
     - Tester en local un server pour choisir solution
     - Mettre solution en place sur apt.geonature.com
     - Ajouter solution pour uploader fichiers si validation CI
-    
 
-Deb Taxhub
+
+## Deb Taxhub
 
     - Reorganiser configuration
-    - Faire fichiers DEBIANS
+    - Faire fichiers DEBIAN
     - Ajouter process de build dans manage.py et build_tools
-    
-Deb UsersHub
+    - Tester médias dans /var/www/...
 
-    - Retirer les prompts de configurations superflux (secret keys, port, etc)
-    - Retirer Xtrace
-    - Supprimer certains dossiers à la désinstallation pour réviter les warnings
-    
-Deb génoature DB:
+## Deb UsersHub
+
+    - Tester si fichier configuration connexion à la BD existe
+    - Configuration apache
+
+## Deb GeoNature DB:
 
     - Faire le diagram d'état et s'assurer que le script suive ces états
     - Ajouter process de build dans manage.py et build_tools
-    
-    
-Deb Géonature:
+    - Mise à jour des dépots github principaux pour répercuter les modifications
+
+
+## Deb GeoNature:
 
     - Reorganiser configuration
     - Faire fichiers DEBIANS
