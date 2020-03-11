@@ -1,0 +1,21 @@
+# Learn about this file at https://www.debian.org/doc/debian-policy/ch-controlfields.html
+# Those fields order matter, don't move them
+Source: usershub
+Maintainer: PnX-SI Team <geonature@ecrins-parcnational.fr>
+Build-Depends: debhelper (>= 10)
+# The packaging standard this uses.
+# Check for changes by version here: # check changes here: https://www.debian.org/doc/packaging-manuals/upgrading-checklist.txt
+Standards-Version: 4.5.0 
+Section: web
+Homepage: https://github.com/PnX-SI/UsersHub/
+# This blank line is required, don't move it:
+
+Package: usershub
+#Version: Don't put version in it. Put version in the changelog file
+Priority: optional
+# see https://www.debian.org/doc/packaging-manuals/upgrading-checklist.txt
+Architecture: amd64
+Depends: python3 (>=3.5), libpq-dev, python3-venv, supervisor
+Description: GeoNature database installation
+ This package install the UsersHub application
+
