@@ -22,14 +22,12 @@ from build_tools.sh_utils import ensure_npm
 
 
 def build_usershub_deb(
-    version,
-    release,
     keep_temp_dir,
     temp_dir,
     dest_dir,
-    arch,
     usershub_repo_uri,
     usershub_checkout,
+    distributions,
 ):
 
     with in_temp_dir(root=temp_dir, delete=not keep_temp_dir) as dir_path:
@@ -45,24 +43,23 @@ def build_usershub_deb(
         with in_dir(static_dir):
             npm_run("ci")
 
-        # Create an skeleton file system for the deb file from the template
-        deb_tree_path = create_deb_fs_tree(
-            template=str(ROOT_DIR / "deb_packages_files/usershub/"),
-            output_dir=str(dir_path),
-            version=version,
-            release=release,
-            architecture=arch,
-        )
+        for distrib in distributions:
+            # Create an skeleton file system for the deb file from the template
+            deb_tree_path = create_deb_fs_tree(
+                template=str(ROOT_DIR / "deb_packages_files/usershub"),
+                output_dir=str(dir_path / distrib),
+                distribution=distrib,
+            )
 
-        # Populate it
-        code_dir = deb_tree_path / "usr/share/usershub"
-        copy_files(
-            {
-                repo_dir / "app": code_dir / "app",
-                repo_dir / "server.py": code_dir,
-                repo_dir / "requirements.txt": code_dir,
-            }
-        )
-        # Zip the package and copy it
-        deb_package = package_deb_tree(deb_tree_path)
-        move_package_to_build_dir(deb_package, dest_dir)
+            # Populate it
+            code_dir = deb_tree_path / "usr/share/usershub"
+            copy_files(
+                {
+                    repo_dir / "app": code_dir / "app",
+                    repo_dir / "server.py": code_dir,
+                    repo_dir / "requirements.txt": code_dir,
+                }
+            )
+            # Zip the package and copy it
+            deb_package = package_deb_tree(deb_tree_path)
+            move_package_to_build_dir(deb_package, dest_dir / distrib)

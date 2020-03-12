@@ -66,7 +66,7 @@ def clone_git_repository(uri, ref, dest):
         sys.exit("Cloning repository failed: %s" % e)
 
 
-def create_deb_fs_tree(template, output_dir, version, release, architecture):
+def create_deb_fs_tree(template, output_dir, distribution):
 
     print("Create deb file system tree")
     # Use cookiecutter to turn the template into a real directory tree
@@ -75,9 +75,8 @@ def create_deb_fs_tree(template, output_dir, version, release, architecture):
         generate_files(  # fonction de cookiecutter non documentée (cf code)
             repo_dir=str(template),
             context={
-                "package_version": version,
-                "package_release": release,
-                "package_architecture": architecture,
+                "cookiecutter": {}, # cookiecutter requires to have "cookiecutter" in the name of the template name
+                "distribution": distribution,
                 "checksums": recursive_md5(next(template.iterdir())),
             },
             overwrite_if_exists=True,
@@ -85,14 +84,8 @@ def create_deb_fs_tree(template, output_dir, version, release, architecture):
         )
     )
 
-    # cookiecutter requires to have "cookiecutter_" in the name of the
-    # template, so we added it, but we remove it in the final build
-    clean_name = str(unziped_package).replace("cookiecutter_", "")
-    unziped_package.rename(clean_name)
-    unziped_package = Path(clean_name)
-
     # dpkg-deb --build doesn't want anything with 777 permissions
-    for path in (unziped_package / "DEBIAN").rglob("*"):
+    for path in (unziped_package / "debian").rglob("*"):
         path.chmod(0o775)
 
     return unziped_package
@@ -117,11 +110,12 @@ def package_deb_tree(directory):
     """ Apply the dpkg build process to a debian complient FS tree """
     try:
         print("Zip deb package")
-        sh.dpkg_deb("--build", directory)
+        with in_dir(directory):
+            sh.dpkg_buildpackage("--no-sign", "--build=binary")
     except sh.ErrorReturnCode as e:
         sys.exit("Error while finalizing up the package with dpkg: %s" % e)
 
-    return str(directory) + ".deb"
+    return next(directory.parent.glob("*.deb"))
 
 
 def move_package_to_build_dir(deb_package, build_dir):

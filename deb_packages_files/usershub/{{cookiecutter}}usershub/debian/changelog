@@ -1,4 +1,4 @@
-usershub (0.0.1-1) strech eoan; urgency=medium
+usershub (0.0.1-1) {{ distribution }}; urgency=medium
 
   * Initial release
 

@@ -24,7 +24,6 @@ def cli():
     help="The directory where to output the package",
     show_default=True,
 )
-@click.option("--arch", default="amd64", help="The archictecture to release for")
 @click.option(
     "--temp-dir",
     default=None,
@@ -75,31 +74,29 @@ def cli():
     show_default=True,
     help="The git reference to checkout after cloning the usershub repo",
 )
+@click.option(
+    "--distributions",
+    default="stretch,buster,xenial,bionic",
+    show_default=True,
+    help="Coma separated values of the debian and ubuntu distribution codes to build deb for",
+)
 @click.argument(
     "project",
     metavar="PROJECT_NAME",
     type=click.Choice(["geonaturedb", "usershub"], case_sensitive=False),
 )
-@click.argument(
-    "version", metavar="VERSION_NUMBER",
-)
-@click.argument(
-    "release", metavar="RELEASE_NUMBER", type=int,
-)
 def build(
     project,
-    version,
-    release,
     keep_temp_dir,
     temp_dir,
     dest_dir,
-    arch,
     usershub_repo_uri,
     taxhub_repo_uri,
     geonature_repo_uri,
     usershub_checkout,
     taxhub_checkout,
     geonature_checkout,
+    distributions
 ):
     """Build a package for the given project, version and release.
 
@@ -107,33 +104,29 @@ def build(
 
             - geonaturedb
     """
-
+    distributions = distributions.split(',')
     if project == "geonaturedb":
         build_geonaturedb_deb(
-            version,
-            release,
             keep_temp_dir,
             temp_dir,
             dest_dir,
-            arch,
             usershub_repo_uri,
             taxhub_repo_uri,
             geonature_repo_uri,
             usershub_checkout,
             taxhub_checkout,
             geonature_checkout,
+            distributions
         )
 
     if project == "usershub":
         build_usershub_deb(
-            version,
-            release,
             keep_temp_dir,
             temp_dir,
             dest_dir,
-            arch,
             usershub_repo_uri,
             usershub_checkout,
+            distributions
         )
 
 @cli.command()
