@@ -1,0 +1,4 @@
+debian/taxhub
+debian/.debhelper
+
+app/opt/taxhub/*

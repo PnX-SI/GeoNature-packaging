@@ -1,0 +1,9 @@
+Template: taxhub/CONF_EXISTS
+Type: boolean
+Default: false
+Description: Est-ce que le fichier de conf existe avant l'installation?
+
+
+Template: taxhub/SECRET_KEY
+Type: string
+Description: Clé de sécurité de l'application

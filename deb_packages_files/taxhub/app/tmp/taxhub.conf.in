@@ -1,0 +1,7 @@
+SECRET_KEY = "${SECRET_KEY}"
+
+# Authentification crypting method (hash or md5)
+PASS_METHOD = "hash"
+
+COOKIE_EXPIRATION = 3600
+COOKIE_AUTORENEW = true

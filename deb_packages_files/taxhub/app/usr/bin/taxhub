@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# activate the virtualenv
+source /opt/taxhub/venv/bin/activate
+
+export PYTHONPATH=/opt/taxhub:$PYTHONPATH
+# Start your unicorn
+exec gunicorn server:app --access-logfile /var/log/taxhub/access_taxhub.log --config /etc/geonature/gunicorn-taxhub.conf.py
