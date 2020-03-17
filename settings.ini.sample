@@ -4,22 +4,33 @@
 # the sites
 ####################################################
 
+# Credentials to use to login and be able to add
+# and delete users
+TEST_LOGIN=admin
+TEST_PASSWORD=admin
+
 # Entry point for testing geonature
 # This is should be the root of the site
 GEONATURE_URL=http://127.0.0.1:8000
 # The application id given to geonature in the database
+GEONATURE_LOGIN_URL=/api/auth/login
 GEONATURE_APPLICATION_ID=3
+
 # Entry point for testing usershub
 # This is should be the root of the site
 USERSHUB_URL=http://127.0.0.1:5001
-# Credentials to use to login and be able to add
-# and delete users
-USERSHUB_TEST_LOGIN=admin
-USERSHUB_TEST_PASSWORD=admin
 # The PATH of the form to send the credentials to
 # This will be appended to USERSHUB_URL
 USERSHUB_LOGIN_URL=/pypn/auth/login
 USERSHUB_APPLICATION_ID=1
+
+# Entry point for testing usershub
+# This is should be the root of the site
+TAXHUB_URL=http://127.0.0.1:5000
+# The PATH of the form to send the credentials to
+# This will be appended to TAXHUB_URL
+TAXHUB_LOGIN_URL=/api/auth/login
+TAXHUB_APPLICATION_ID=1
 
 ####################################################
 # Settings the test scripts will use to configure

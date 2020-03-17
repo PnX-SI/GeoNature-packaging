@@ -54,7 +54,7 @@ export PYTHON_EXE=${GEONATURE_CI_PYTHON:-$most_recent_python}
 
 # If we are in a venv, make sure it's suitable, and use it
 prefix=$(python -c 'import sys; print(getattr(sys, "real_prefix", ""))')
-venv=${VIRTUAL_ENV:-prefix}
+venv=${VIRTUAL_ENV:-$prefix}
 if [[ $venv ]]; then
     echo "Currently in a venv '${venv}', using that instead of creating one."
     python_version=$(python -V 2>&1 | cut -d\  -f 2) # python 2 prints version to stderr
